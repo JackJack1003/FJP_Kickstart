@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.14",
+    "bcrypt": "^5.0.1",
+    "crypto": "^1.0.1",
     "fs-extra": "^10.1.0",
     "ganache-cli": "^6.12.2",
     "mocha": "^10.0.0",
@@ -26,6 +28,11 @@
   },
   "directories": {
     "test": "test"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "devDependencies": {
     "eslint": "8.22.0",

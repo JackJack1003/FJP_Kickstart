@@ -33,6 +33,16 @@ class Login extends Component {
     } catch (err) {
       console.log(err);
     }
+    const res = await fetch('api/password/addPass', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: 'Jack',
+        password: `${this.state.newPassword}`,
+      }),
+    });
+    const data = await res.json();
+    console.log(data);
   };
   render() {
     return (

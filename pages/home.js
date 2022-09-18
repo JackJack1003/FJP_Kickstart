@@ -4,6 +4,7 @@ import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
+import BigNavBar from '../components/BigNavBar';
 class Home extends Component {
   static async getInitialProps() {
     const campaigns = await factory.methods.getDeployedContracts().call();
@@ -27,6 +28,7 @@ class Home extends Component {
   render() {
     return (
       <Layout>
+        <BigNavBar />
         <div>
           <h3>Open bank account</h3>
           <Link route="/campaigns/new">

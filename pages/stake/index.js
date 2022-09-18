@@ -6,6 +6,7 @@ import artifact from '../../artifacts/contracts/Staking.sol/Staking.json';
 import NavBar from './components/NavBar';
 import StakeModal from './components/StakeModal';
 import { Bank, PiggyBank, Coin } from 'react-bootstrap-icons';
+import BigNavBar from '../../components/BigNavBar';
 
 const CONTRACT_ADDRESS = '0x47B7D32d1Fc2dd17829d786fd23D5eDe156C0e9A';
 
@@ -43,10 +44,11 @@ function App() {
       setProvider(provider);
 
       console.log('provider is nie probleem nie');
-      const wallet = new ethers.Wallet(
+      const wallet = await new ethers.Wallet(
         '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
         provider
       );
+      console.log('wallet is: ', wallet);
       setWallet(wallet);
       console.log('wallet is nie probleem nie');
       const contract = await new ethers.Contract(
@@ -56,6 +58,7 @@ function App() {
       setContract(contract);
       console.log('contract is nie probleem nie');
     };
+
     onLoad();
   }, []);
 
@@ -65,6 +68,7 @@ function App() {
     //provider.send('eth_requestAccounts', []);
     const signer = wallet.connect(provider);
     setSigner(signer);
+    getAssets(assetIds, signer);
     return signer;
   };
 
@@ -88,19 +92,21 @@ function App() {
 
     queriedAssets.map(async (asset) => {
       const parsedAsset = {
-        positionId: asset.positionId,
+        positionID: asset.positionID,
         percentInterest: Number(asset.percentInterest) / 100,
         daysRemaining: calcDaysRemaining(Number(asset.unlockedDate)),
         etherInterest: toEther(asset.weiInterest),
         etherStaked: toEther(asset.weiStaked),
-        open: asset.open,
+        opened: asset.opened,
       };
 
       setAssets((prev) => [...prev, parsedAsset]);
+      console.log('Assets is: ', parsedAsset);
     });
   };
 
   const connectAndLoad = async () => {
+    console.log('hy connect en load');
     const signer = await getSigner(provider);
     setSigner(signer);
 
@@ -122,15 +128,21 @@ function App() {
   const stakeEther = () => {
     const wei = toWei(amount);
     const data = { value: wei };
+    connectAndLoad();
+    console.log('contract is: ', contract);
+    console.log('signer is: ', signer);
     contract.connect(signer).stakeEther(stakingLength, data);
   };
 
-  const withdraw = (positionId) => {
-    contract.connect(signer).closePosition(positionId);
+  const withdraw = (positionID) => {
+    console.log('positionID is ');
+    console.log(positionID);
+    contract.connect(signer).closePosition(positionID);
   };
 
   return (
     <div className="App">
+      <BigNavBar />
       <div>
         <NavBar isConnected={isConnected} connect={connectAndLoad} />
       </div>
@@ -138,9 +150,6 @@ function App() {
       <div className="appBody">
         <div className="marketContainer">
           <div className="subContainer">
-            <span>
-              <img className="logoImg" src="eth-logo.webp" />
-            </span>
             <span className="marketHeader">Ethereum Market</span>
           </div>
 
@@ -216,19 +225,15 @@ function App() {
           {assets.length > 0 &&
             assets.map((a, idx) => (
               <div className="row">
-                <div className="col-md-2">
-                  <span>
-                    <img className="stakedLogoImg" src="eth-logo.webp" />
-                  </span>
-                </div>
+                <div className="col-md-2"></div>
                 <div className="col-md-2">{a.percentInterest} %</div>
                 <div className="col-md-2">{a.etherStaked}</div>
                 <div className="col-md-2">{a.etherInterest}</div>
                 <div className="col-md-2">{a.daysRemaining}</div>
                 <div className="col-md-2">
-                  {a.open ? (
+                  {a.opened ? (
                     <div
-                      onClick={() => withdraw(a.positionId)}
+                      onClick={() => withdraw(a.positionID)}
                       className="orangeMiniButton"
                     >
                       Withdraw

@@ -7,7 +7,9 @@ import bankArtifact from '../../artifacts/contracts/Bank.sol/Bank.json';
 import maticArtifact from '../../artifacts/contracts/Matic.sol/Matic.json';
 import shibArtifact from '../../artifacts/contracts/Shib.sol/Shib.json';
 import usdtArtifact from '../../artifacts/contracts/Usdt.sol/Usdt.json';
+import BigNavBar from '../../components/BigNavBar.js';
 //import { Button } from 'bootstrap';
+// import { View, Text } from 'react-native';
 
 export default function App() {
   const [provider, setProvider] = useState(undefined);
@@ -18,6 +20,11 @@ export default function App() {
   const [tokenContracts, setTokenContracts] = useState({});
   const [tokenBalances, setTokenBalances] = useState({});
   const [tokenSymbols, setTokenSymbols] = useState([]);
+  const [exchangeRate, setExchangeRate] = useState('0');
+  const [depositValue, setDepositValue] = useState('0');
+  const [withdrawValue, setWithdrawValue] = useState('0');
+  const [depositSym, setDepositSym] = useState('');
+  const [withdrawSym, setWithdrawSym] = useState('');
 
   const [amount, setAmount] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -130,7 +137,7 @@ export default function App() {
     setShowModal(true);
   };
 
-  const depositTokens = (wei, symbol) => {
+  const depositTokens = async (wei, symbol) => {
     if (symbol === 'Eth') {
       signer.sendTransaction({
         to: bankContract.address,
@@ -138,22 +145,22 @@ export default function App() {
       });
     } else {
       const tokenContract = tokenContracts[symbol];
-      console.log('hier2');
       tokenContract
         .connect(signer)
         .approve(bankContract.address, wei)
         .then(() => {
-          console.log('hier3');
           bankContract.connect(signer).depositTokens(wei, toBytes32(symbol));
+          console.log('deposit is klaar');
         });
     }
   };
 
-  const withdrawTokens = (wei, symbol) => {
+  const withdrawTokens = async (wei, symbol) => {
     if (symbol === 'Eth') {
       bankContract.connect(signer).withdrawEther(wei);
     } else {
       bankContract.connect(signer).withdrawTokens(wei, toBytes32(symbol));
+      console.log('withdraw is klaar');
     }
   };
 
@@ -161,6 +168,16 @@ export default function App() {
     const wei = toWei('100');
     depositTokens(wei, 'Usdt');
     withdrawTokens(wei, 'Shib');
+  };
+  const exchange = async (_depSym, _withSym, _depValue, _withValue) => {
+    console.log('exchange word gecall');
+    console.log(_depSym, _depValue, _withSym, _withValue);
+    const withWei = toWei(_withValue);
+    const depWei = toWei(_depValue);
+    // await getTokenContract();
+    depositTokens(depWei, _depSym);
+    await sleep(5000);
+    withdrawTokens(withWei, _withSym);
   };
 
   const depositOrWithdraw = (e, symbol) => {
@@ -187,6 +204,7 @@ export default function App() {
 
   return (
     <div className="App">
+      <BigNavBar />
       <header className="App-header">
         {isConnected() ? (
           <div>
@@ -206,32 +224,73 @@ export default function App() {
                         </small>
                       </div>
 
-                      <div className="d-flex gap-4 col-md-6">
+                      {/* <div className="d-flex gap-4 col-md-6">
                         <button
                           onClick={() => displayModal(symbol)}
                           className="btn btn-primary"
                         >
                           Deposit/Withdraw
-                        </button>
-                        <Modal
-                          show={showModal}
-                          onClose={() => setShowModal(false)}
-                          symbol={selectedSymbol}
-                          depositOrWithdraw={depositOrWithdraw}
-                          isDeposit={isDeposit}
-                          setIsDeposit={setIsDeposit}
-                          setAmount={setAmount}
-                        />
-                      </div>
+                        </button> */}
+                      <Modal
+                        show={showModal}
+                        onClose={() => setShowModal(false)}
+                        symbol={selectedSymbol}
+                        depositOrWithdraw={depositOrWithdraw}
+                        isDeposit={isDeposit}
+                        setIsDeposit={setIsDeposit}
+                        setAmount={setAmount}
+                      />
                     </div>
+                    // </div>
                   ))}
                   <div className="loadBank">
                     <button onClick={() => loadBank()}> Load bank!</button>
                   </div>
-                  <div className="Exchange">
+                  {/* <div className="Exchange">
                     <button onClick={() => exchangeToken()}> Exchange!</button>
+                  </div> */}
+
+                  <div>
+                    Deposit
+                    <input
+                      onChange={(e) => {
+                        setExchangeRate(e.target.value);
+                      }}
+                    />
+                    <select
+                      name="selectList"
+                      id="selectList"
+                      onChange={(e) => setDepositSym(e.target.value)}
+                    >
+                        <option value="Matic">Matic</option> {' '}
+                      <option value="Shib">Shib</option>
+                      <option value="Usdt">Tether</option>
+                    </select>
+                    For
+                    {exchangeRate}
+                    <select
+                      name="selectList"
+                      id="selectList"
+                      onChange={(e) => setWithdrawSym(e.target.value)}
+                    >
+                        <option value="Matic">Matic</option> {' '}
+                      <option value="Shib">Shib</option>
+                      <option value="Usdt">Tether</option>
+                    </select>
                   </div>
                 </div>
+                <button
+                  onClick={() =>
+                    exchange(
+                      depositSym,
+                      withdrawSym,
+                      exchangeRate,
+                      exchangeRate
+                    )
+                  }
+                >
+                  Exchange!
+                </button>
               </div>
             </div>
           </div>

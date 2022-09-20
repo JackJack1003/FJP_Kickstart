@@ -2,6 +2,7 @@ pragma solidity ^0.8.0;
 
 contract Staking {
     address public owner; 
+    uint maximumLiquidity = 1000000000000000000; 
     struct Position {
         uint positionID; 
         address walletAddress; 
@@ -34,6 +35,9 @@ contract Staking {
 
     function stakeEther(uint _numDays) external payable {
         require(tiers[_numDays]>0, "mapping not found"); 
+        uint256 totalLoans = address(this).balance + msg.value + calculateInterest(tiers[_numDays], _numDays, msg.value); 
+        if(totalLoans<maximumLiquidity)
+        liquidate(); 
         positions[currentPositionID] = Position(currentPositionID, 
         msg.sender, 
         block.timestamp, 
@@ -46,7 +50,13 @@ contract Staking {
         currentPositionID +=1;  
 
     }
+    function liquidate() private  {
 
+        for (uint256 i=0; i<=currentPositionID; i++) {
+            this.closePosition(i); 
+            }
+
+    }
     function calculateInterest(uint _basisPoints, uint _numDays, uint _wei) private pure returns(uint){
         return(_basisPoints*_wei/10000); 
 

@@ -2,6 +2,7 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import Modal from './Modal.js';
+const ccxt = require('ccxt');
 
 import bankArtifact from '../../artifacts/contracts/Bank.sol/Bank.json';
 import maticArtifact from '../../artifacts/contracts/Matic.sol/Matic.json';
@@ -25,6 +26,8 @@ export default function App() {
   const [withdrawValue, setWithdrawValue] = useState('0');
   const [depositSym, setDepositSym] = useState('');
   const [withdrawSym, setWithdrawSym] = useState('');
+  const [markets, setMarkets] = useState([]);
+  const [keys, setKeys] = useState([]);
 
   const [amount, setAmount] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -39,6 +42,13 @@ export default function App() {
 
   useEffect(() => {
     const init = async () => {
+      let bybit_futures = new ccxt.bybit({});
+      let dummyMarkets = await bybit_futures.loadMarkets();
+      setMarkets(dummyMarkets);
+      var dummyKeys = Object.keys(dummyMarkets);
+      setKeys(dummyKeys);
+
+      //console.log('Price is: ', dummyMarkets[dummyKeys[2]].precision.price);
       // const provider = await new ethers.providers.Web3Provider(window.ethereum);
       // setProvider(provider);
       const provider = await new ethers.providers.InfuraProvider(
@@ -53,7 +63,7 @@ export default function App() {
       setWallet(wallet);
 
       const bankContract = await new ethers.Contract(
-        '0xE350868425Ff67e1c5D0D0b6AF483FC4a093fE32',
+        '0xaC5F6e0c450B1B22beaC121B7978e23E8a45DFAf',
         bankArtifact.abi
       );
       setBankContract(bankContract);
@@ -74,6 +84,8 @@ export default function App() {
   }, []);
 
   const getTokenContract = async (symbol, bankContract, provider) => {
+    //setMarkets();
+
     const address = await bankContract
       .connect(provider)
       .getWhitelistedTokenAddress(toBytes32(symbol));
@@ -164,11 +176,6 @@ export default function App() {
     }
   };
 
-  const exchangeToken = () => {
-    const wei = toWei('100');
-    depositTokens(wei, 'Usdt');
-    withdrawTokens(wei, 'Shib');
-  };
   const exchange = async (_depSym, _withSym, _depValue, _withValue) => {
     console.log('exchange word gecall');
     console.log(_depSym, _depValue, _withSym, _withValue);
@@ -200,6 +207,30 @@ export default function App() {
     depositTokens(toWei('500'), 'Shib');
     await sleep(3500);
     depositTokens(toWei('500'), 'Usdt');
+  };
+  const changeExchangeRate = (_value) => {
+    let multiplier = 0.1;
+    if (depositSym == withdrawSym) multiplier = 1;
+    else if (depositSym == 'Matic' && withdrawSym == 'Shib')
+      multiplier = markets[keys[0]].precision.price;
+    else if (depositSym == 'Shib' && withdrawSym == 'Usdt')
+      multiplier = markets[keys[1]].precision.price;
+    else if (depositSym == 'Usdt' && withdrawSym == 'Matic')
+      multiplier = markets[keys[2]].precision.price;
+    else if (depositSym == 'Matic' && withdrawSym == 'Usdt')
+      multiplier = 1 / markets[keys[2]].precision.price;
+    else if (depositSym == 'Shib' && withdrawSym == 'Matic')
+      multiplier = 1 / markets[keys[0]].precision.price;
+    else if (depositSym == 'Usdt' && withdrawSym == 'Shib')
+      multiplier = 1 / markets[keys[1]].precision.price;
+    else console.log('Hiers moeilikheid by die else if');
+
+    //let multiplier = markets[keys[2]].precision.price;
+    console.log('multiplier is: ', multiplier);
+
+    setDepositValue(_value);
+    setExchangeRate((_value * multiplier).toString());
+    console.log(exchangeRate);
   };
 
   return (
@@ -252,10 +283,13 @@ export default function App() {
 
                   <div>
                     Deposit
-                    <input
+                    {/* <input
                       onChange={(e) => {
                         setExchangeRate(e.target.value);
                       }}
+                    /> */}
+                    <input
+                      onChange={(e) => changeExchangeRate(e.target.value)}
                     />
                     <select
                       name="selectList"
@@ -284,7 +318,7 @@ export default function App() {
                     exchange(
                       depositSym,
                       withdrawSym,
-                      exchangeRate,
+                      depositValue,
                       exchangeRate
                     )
                   }

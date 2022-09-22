@@ -7,20 +7,57 @@ import { Link } from '../routes';
 import { Router } from '../routes';
 import web3 from '../ethereum/web3';
 import { Mongoose } from 'mongoose';
-//import { MongoClient } from 'mongodb';
+import { client } from '../lib/sanityClient';
 var crypto = require('crypto');
-// const uri =
-//   'mongodb+srv://admin:myMONGOslap123@fjp-cluster.o2bbxpl.mongodb.net/?retryWrites=true&w=majority';
-//const client = new MongoClient(uri);
+
 class Login extends Component {
   state = {
     password: '',
     newPassword: '',
     salt: '',
     userName: '',
+    walletAddress: '',
   };
   loginFunc = async () => {
     console.log('login begin');
+    const query = `
+    *[_type=="users" && userName == "${this.state.userName}"] { userName, password, salt
+    }
+  `;
+    const clientRes = await client.fetch(query);
+    console.log('Client res is', clientRes);
+    if (clientRes.length <= 0) {
+      window.alert('User does not exist, sign up instead');
+    } else {
+      let myUserInfo = clientRes[0];
+      console.log(myUserInfo);
+      const dbSalt = myUserInfo.salt;
+      const dbPass = myUserInfo.password;
+      await this.setState({
+        newPassword: crypto
+          .pbkdf2Sync(this.state.password, dbSalt, 1000, 64, `sha512`)
+          .toString(`hex`),
+      });
+      if (this.state.newPassword == dbPass) console.log('Password match');
+      else console.log('no pass!');
+    }
+  };
+
+  saveUser = async () => {
+    const accounts = await web3.eth.getAccounts();
+    await factory.methods.createCampaign('0').send({ from: accounts[0] });
+    const banks = await factory.methods.getDeployedContracts().call();
+    const txDoc = {
+      _type: 'users',
+      userName: this.state.userName,
+      password: this.state.newPassword,
+      email: 'jack@coetzer.co.za',
+      salt: this.state.salt,
+      address: banks[banks.length - 1],
+    };
+    await client.create(txDoc);
+
+    return;
   };
   callCreate = async () => {
     console.log('hy het geclick');
@@ -39,19 +76,23 @@ class Login extends Component {
     } catch (err) {
       console.log(err);
     }
-    const res = fetch('api/password/addPass', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: `${this.state.userName}`,
-        password: `${this.state.newPassword}`,
-      }),
-    }).then((response) => {
-      console.log(response);
-      Router.pushRoute('/home');
-    });
-    // const data = await res.json();
-    // console.log(data);
+
+    const query = `
+    *[_type=="users" && userName == "${this.state.userName}"] { userName, password, salt
+    }
+  `;
+    const clientRes = await client.fetch(query);
+    if (clientRes.length <= 0) {
+      //skep nuwe account
+      try {
+        //save user
+        this.saveUser().then((response) => {
+          console.log(response);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
   render() {
     return (

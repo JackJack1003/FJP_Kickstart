@@ -8,7 +8,7 @@ import StakeModal from './components/StakeModal';
 import { Bank, PiggyBank, Coin } from 'react-bootstrap-icons';
 import BigNavBar from '../../components/BigNavBar';
 
-const CONTRACT_ADDRESS = '0x47B7D32d1Fc2dd17829d786fd23D5eDe156C0e9A';
+const CONTRACT_ADDRESS = '0x41f7206e131c4Ac076D94cB5ea0302cB2D3CACee';
 
 function App() {
   // general
@@ -38,8 +38,8 @@ function App() {
       // setProvider(provider);
 
       const provider = await new ethers.providers.InfuraProvider(
-        'rinkeby',
-        '7a262829a92541f1b6fab55960a806cd'
+        'goerli',
+        'cf39d39ac33347f7959e2575d8e5b5c9'
       );
       setProvider(provider);
 

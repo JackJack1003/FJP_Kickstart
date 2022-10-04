@@ -1,7 +1,6 @@
 //import './App.css';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import Modal from './Modal.js';
 const ccxt = require('ccxt');
 
 import bankArtifact from '../../artifacts/contracts/Bank.sol/Bank.json';
@@ -9,6 +8,7 @@ import T1Artifact from '../../artifacts/contracts/Token.sol/Token.json';
 import T2Artifact from '../../artifacts/contracts/Token2.sol/Token2.json';
 import T3Artifact from '../../artifacts/contracts/Token3.sol/Token3.json';
 import BigNavBar from '../../components/BigNavBar.js';
+import loanArtifact from '../../artifacts/contracts/Loans.sol/Loan.json';
 import web3 from '../../ethereum/web3';
 //import { Button } from 'bootstrap';
 // import { View, Text } from 'react-native';
@@ -29,9 +29,10 @@ export default function App() {
   const [withdrawSym, setWithdrawSym] = useState('');
   const [markets, setMarkets] = useState([]);
   const [keys, setKeys] = useState([]);
+  const [assetIds, setAssetIds] = useState([]);
+  const [assets, setAssets] = useState([]);
 
   const [amount, setAmount] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(undefined);
   const [isDeposit, setIsDeposit] = useState(true);
 
@@ -64,8 +65,8 @@ export default function App() {
       setWallet(wallet);
 
       const bankContract = await new ethers.Contract(
-        '0xF09293966F92F25757BA2CE502036C7D2032911D',
-        bankArtifact.abi
+        '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+        loanArtifact.abi
       );
       setBankContract(bankContract);
       const _symbols = [];
@@ -75,14 +76,13 @@ export default function App() {
         .then((result) => {
           result.map((s) => {
             toString(s);
-            //console.log('s is ', toString(s));
+
             _symbols.push(toString(s));
           });
-          //console.log('die _symbols is', _symbols);
+
           setTokenSymbols(_symbols);
           getTokenContracts(_symbols, bankContract, provider);
         });
-      console.log('use Effect is wiele');
 
       //initial transfer
       //depositTokens(toWei('500'), 'Eth');
@@ -121,33 +121,55 @@ export default function App() {
       'goerli',
       'cf39d39ac33347f7959e2575d8e5b5c9'
     );
-    console.log('provider is', _provider);
+
     // provider.send('eth_requestAccounts', []);
     const _wallet = new ethers.Wallet(
       '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
       _provider
     );
-    console.log('wallet is', _wallet);
+
     const signer = _wallet.connect(_provider);
     // const signer = provider.getSigner();
     signer.getAddress().then((address) => {
       setSignerAddress(address);
     });
+    getAssets(assetIds, signer);
 
     return signer;
   };
+  const getAssetIds = async (address, signer) => {
+    const bankContract = await new ethers.Contract(
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
+    );
+    const assetIds = await bankContract
+      .connect(signer)
+      .getPositionIdsForAddress(address);
+    return assetIds;
+  };
 
-  const connect = () => {
-    getSigner(provider).then((signer) => {
-      setSigner(signer);
-      getTokenBalances(signer);
-    });
+  const connect = async () => {
+    // getSigner(provider).then((signer) => {
+    //   setSigner(signer);
+    //   getTokenBalances(signer);
+    //   const assetIds = await getAssetIds(signerAddress, signer);
+    //   setAssetIds(assetIds);
+    //   getAssets(assetIds, signer);
+    // });
+    const signer = await getSigner(provider);
+    setSigner(signer);
+    getTokenBalances(signer);
+    const signerAddress = await signer.getAddress();
+    setSignerAddress(signerAddress);
+    const assetIds = await getAssetIds(signerAddress, signer);
+    setAssetIds(assetIds);
+    getAssets(assetIds, signer);
   };
 
   const getTokenBalance = async (symbol, signer) => {
     const bankContract = await new ethers.Contract(
-      '0xF09293966F92F25757BA2CE502036C7D2032911D',
-      bankArtifact.abi
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
     );
     const balance = await bankContract
       .connect(signer)
@@ -157,10 +179,10 @@ export default function App() {
 
   const getTokenBalances = async (signer) => {
     const _symbols = [];
-    console.log('token balances word geroep');
+
     const bankContract = await new ethers.Contract(
-      '0xF09293966F92F25757BA2CE502036C7D2032911D',
-      bankArtifact.abi
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
     );
     const _provider = await new ethers.providers.InfuraProvider(
       'goerli',
@@ -175,7 +197,6 @@ export default function App() {
           _symbols.push(toString(s));
         });
 
-        console.log(_symbols);
         console.log('length is ', _symbols.length);
         for (var symbol in _symbols) {
           const balance = await getTokenBalance(_symbols[symbol], signer);
@@ -183,16 +204,10 @@ export default function App() {
             ...prev,
             [symbol]: balance.toString(),
           }));
-          console.log(_symbols[symbol]);
         }
       });
 
     console.log('token balances is ', tokenBalances);
-  };
-
-  const displayModal = (symbol) => {
-    setSelectedSymbol(symbol);
-    setShowModal(true);
   };
 
   const depositTokens = async (wei, symbol) => {
@@ -201,6 +216,7 @@ export default function App() {
         to: bankContract.address,
         value: wei,
       });
+      console.log('deposit is klaar');
     } else {
       const tokenContract = tokenContracts[symbol];
       tokenContract
@@ -247,43 +263,49 @@ export default function App() {
     withdrawTokens(withWei, _withSym);
   };
 
-  const depositOrWithdraw = (e, symbol) => {
-    e.preventDefault();
-    const wei = toWei(amount);
+  const getAssets = async (ids, signer) => {
+    const bankContract = await new ethers.Contract(
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
+    );
+    const queriedAssets = await Promise.all(
+      ids.map((id) => bankContract.connect(signer).getPositionById(id))
+    );
+    console.log('queried assets is: ', queriedAssets);
 
-    if (isDeposit) {
-      depositTokens(wei, symbol);
-    } else {
-      withdrawTokens(wei, symbol);
-    }
+    queriedAssets.map(async (asset) => {
+      const parsedAsset = {
+        positionID: asset.positionID,
+        etherStaked: toEther(asset.weiStaked),
+        sentValue: toEther(asset.sentValue),
+        sentSymbol: toString(asset.sentSymbol),
+        opened: asset.opened,
+      };
+
+      setAssets((prev) => [...prev, parsedAsset]);
+      console.log('Assets is: ', parsedAsset);
+    });
   };
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   const loadBank = async () => {
-    console.log('token balances is by load: ', tokenBalances);
     depositTokens(toWei('500'), 'T1');
     await sleep(3500);
     depositTokens(toWei('500'), 'T2');
     await sleep(3500);
     depositTokens(toWei('500'), 'T3');
   };
+
+  const getVars = () => {
+    console.log(assets);
+  };
   const changeExchangeRate = (_value) => {
     let multiplier = 0.1;
-    if (depositSym == withdrawSym) multiplier = 1;
-    else if (depositSym == 'T1' && withdrawSym == 'T2')
-      multiplier = markets[keys[0]].precision.price;
-    else if (depositSym == 'T2' && withdrawSym == 'T3')
-      multiplier = markets[keys[1]].precision.price;
-    else if (depositSym == 'T3' && withdrawSym == 'T1')
-      multiplier = markets[keys[2]].precision.price;
-    else if (depositSym == 'T1' && withdrawSym == 'T3')
-      multiplier = 1 / markets[keys[2]].precision.price;
-    else if (depositSym == 'T2' && withdrawSym == 'T1')
-      multiplier = 1 / markets[keys[0]].precision.price;
-    else if (depositSym == 'T3' && withdrawSym == 'T2')
-      multiplier = 1 / markets[keys[1]].precision.price;
+    if (depositSym == 'T1') multiplier = 900;
+    else if (depositSym == 'T2') multiplier = 800;
+    else if (depositSym == 'T3') multiplier = 700;
     else console.log('Hiers moeilikheid by die else if');
 
     //let multiplier = markets[keys[2]].precision.price;
@@ -291,7 +313,32 @@ export default function App() {
 
     setDepositValue(_value);
     setExchangeRate((_value * multiplier).toString());
-    console.log(exchangeRate);
+  };
+
+  const stakeEther = async (etherStaked, symToSent, valToSend) => {
+    const wei = toWei(etherStaked);
+    const data = { value: wei };
+    const myByte = toBytes32(symToSent.toString());
+    const bankContract = await new ethers.Contract(
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
+    );
+    console.log('die signer is: ', signer);
+    bankContract.connect(signer).stakeEther(myByte, wei);
+
+    withdrawTokens(valToSend, symToSent);
+    await sleep(4000);
+    depositTokens(wei, 'Eth');
+  };
+  const withdraw = async (positionID, _sentValue, _sentSymbol) => {
+    const bankContract = await new ethers.Contract(
+      '0xa264BC4590fdb38004e7A8551a1920411957d21D',
+      loanArtifact.abi
+    );
+    const test = await bankContract
+      .connect(signer)
+      .closePosition(positionID, parseInt(_sentValue), toBytes32(_sentSymbol));
+    console.log('die test is: ', test);
   };
 
   return (
@@ -301,49 +348,49 @@ export default function App() {
         {isConnected() ? (
           <div>
             <p>Welcome {signerAddress?.substring(0, 10)}...</p>
+            <button onClick={() => stakeEther()}>Stake! </button>
             <div>
               <div className="list-group">
                 <div className="list-group-item">
-                  {Object.keys(tokenBalances).map((symbol, idx) => (
-                    <div className=" row d-flex py-3" key={idx}>
-                      <div className="col-md-3">
-                        <div>{symbol.toUpperCase()}</div>
-                      </div>
-
-                      <div className="d-flex gap-4 col-md-3">
-                        <small className="opacity-50 text-nowrap">
-                          {toRound(tokenBalances[symbol])}
-                        </small>
-                      </div>
-
-                      {/* <div className="d-flex gap-4 col-md-6">
-                        <button
-                          onClick={() => displayModal(symbol)}
-                          className="btn btn-primary"
-                        >
-                          Deposit/Withdraw
-                        </button> */}
-                      <Modal
-                        show={showModal}
-                        onClose={() => setShowModal(false)}
-                        symbol={selectedSymbol}
-                        depositOrWithdraw={depositOrWithdraw}
-                        isDeposit={isDeposit}
-                        setIsDeposit={setIsDeposit}
-                        setAmount={setAmount}
-                      />
-                    </div>
-                    // </div>
-                  ))}
                   <div className="loadBank">
                     <button onClick={() => loadBank()}> Load bank!</button>
                   </div>
+                  <button onClick={() => getVars()}>Get Vars </button>
+
+                  {assets.length > 0 &&
+                    assets.map((a, idx) => (
+                      <div className="row">
+                        <div className="col-md-2"></div>
+                        <div className="col-md-2">{a.percentInterest} %</div>
+                        <div className="col-md-2">{a.etherStaked}</div>
+                        <div className="col-md-2">{a.sentValue}</div>
+                        <div className="col-md-2">{a.sentSymbol}</div>
+                        <div className="col-md-2">
+                          {a.opened ? (
+                            <div
+                              onClick={() =>
+                                withdraw(
+                                  a.positionID,
+                                  a.sentValue,
+                                  a.sentSymbol
+                                )
+                              }
+                              className="orangeMiniButton"
+                            >
+                              Withdraw
+                            </div>
+                          ) : (
+                            <span>closed</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   {/* <div className="Exchange">
                     <button onClick={() => exchangeToken()}> Exchange!</button>
                   </div> */}
 
                   <div>
-                    Deposit
+                    Loan
                     {/* <input
                       onChange={(e) => {
                         setExchangeRate(e.target.value);
@@ -363,28 +410,14 @@ export default function App() {
                     </select>
                     For
                     {exchangeRate}
-                    <select
-                      name="selectList"
-                      id="selectList"
-                      onChange={(e) => setWithdrawSym(e.target.value)}
-                    >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">T3</option>
-                    </select>
                   </div>
                 </div>
                 <button
                   onClick={() =>
-                    exchange(
-                      depositSym,
-                      withdrawSym,
-                      depositValue,
-                      exchangeRate
-                    )
+                    stakeEther(depositValue, depositSym, exchangeRate)
                   }
                 >
-                  Exchange!
+                  Loan
                 </button>
               </div>
             </div>

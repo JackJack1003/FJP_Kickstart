@@ -7,16 +7,23 @@ import { Link } from '../routes';
 import BigNavBar from '../components/BigNavBar';
 import { client } from '../lib/sanityClient';
 import Beneficary from '../components/Benificary';
+import Campaign from '../ethereum/campaign';
+import web3 from '../ethereum/web3';
+import Router from 'next/router';
+import { useEffect } from 'react';
 class Home extends Component {
   state = {
     searchUser: '',
     userName: '',
     userAddress: '',
+    manager: '',
   };
-  static async getInitialProps() {
+  static async getInitialProps(props) {
     const campaigns = await factory.methods.getDeployedContracts().call();
+
     return { campaigns };
   } //static beteken ander instances van die class inherent nie die nie
+
   searchFunc = async () => {
     const query = `
     *[_type=="users" && userName == "${this.state.searchUser}"] { userName, password, salt, address
@@ -26,6 +33,12 @@ class Home extends Component {
     this.setState({ userName: clientRes[0].userName });
     await this.setState({ userAddress: clientRes[0].address });
     console.log('Die address wat gestoor is, is ', this.state.userAddress);
+  };
+  viewTrans = async () => {
+    const accounts = await web3.eth.getAccounts();
+    console.log('accounts is: ', accounts[0]);
+
+    Router.push(`/campaigns/history/${accounts[0]}`);
   };
 
   renderCampaigns() {
@@ -63,11 +76,12 @@ class Home extends Component {
             }}
             placeholder="Search by username"
           />
-          <Link route={`/campaigns/${this.state.userAddress}/history`}>
-            <a>
-              <button>View Transaction History</button>
-            </a>
-          </Link>
+          <a>
+            <button onClick={() => this.viewTrans()}>
+              View Transaction History
+            </button>
+          </a>
+
           <button onClick={() => this.searchFunc()}> Search</button>
           <Beneficary
             _user={this.state.userName}

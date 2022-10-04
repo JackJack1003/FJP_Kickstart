@@ -5,7 +5,7 @@ const compiledFactory = require('./build/campaignFactory.json');
 const provider = new HDWalletProvider(
   'regular people come region lock tape inject reunion gun pill display file',
   // remember to change this to your own phrase!
-  'https://rinkeby.infura.io/v3/7a262829a92541f1b6fab55960a806cd'
+  'https://goerli.infura.io/v3/cf39d39ac33347f7959e2575d8e5b5c9'
   // remember to change this to your own endpoint!
 );
 const web3 = new Web3(provider);

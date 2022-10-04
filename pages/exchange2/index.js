@@ -9,7 +9,6 @@ import T1Artifact from '../../artifacts/contracts/Token.sol/Token.json';
 import T2Artifact from '../../artifacts/contracts/Token2.sol/Token2.json';
 import T3Artifact from '../../artifacts/contracts/Token3.sol/Token3.json';
 import BigNavBar from '../../components/BigNavBar.js';
-import web3 from '../../ethereum/web3';
 //import { Button } from 'bootstrap';
 // import { View, Text } from 'react-native';
 
@@ -68,21 +67,15 @@ export default function App() {
         bankArtifact.abi
       );
       setBankContract(bankContract);
-      const _symbols = [];
+
       bankContract
         .connect(provider)
         .getWhitelistedSymbols()
         .then((result) => {
-          result.map((s) => {
-            toString(s);
-            //console.log('s is ', toString(s));
-            _symbols.push(toString(s));
-          });
-          //console.log('die _symbols is', _symbols);
-          setTokenSymbols(_symbols);
-          getTokenContracts(_symbols, bankContract, provider);
+          const symbols = result.map((s) => toString(s));
+          setTokenSymbols(symbols);
+          getTokenContracts(symbols, bankContract, provider);
         });
-      console.log('use Effect is wiele');
 
       //initial transfer
       //depositTokens(toWei('500'), 'Eth');
@@ -117,19 +110,10 @@ export default function App() {
   const isConnected = () => signer !== undefined;
 
   const getSigner = async (provider) => {
-    const _provider = await new ethers.providers.InfuraProvider(
-      'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
-    );
-    console.log('provider is', _provider);
-    // provider.send('eth_requestAccounts', []);
-    const _wallet = new ethers.Wallet(
-      '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
-      _provider
-    );
-    console.log('wallet is', _wallet);
-    const signer = _wallet.connect(_provider);
-    // const signer = provider.getSigner();
+    console.log('provider is', provider);
+    provider.send('eth_requestAccounts', []);
+    const signer = provider.getSigner();
+
     signer.getAddress().then((address) => {
       setSignerAddress(address);
     });
@@ -145,49 +129,17 @@ export default function App() {
   };
 
   const getTokenBalance = async (symbol, signer) => {
-    const bankContract = await new ethers.Contract(
-      '0xF09293966F92F25757BA2CE502036C7D2032911D',
-      bankArtifact.abi
-    );
     const balance = await bankContract
       .connect(signer)
       .getTokenBalance(toBytes32(symbol));
     return toEther(balance);
   };
 
-  const getTokenBalances = async (signer) => {
-    const _symbols = [];
-    console.log('token balances word geroep');
-    const bankContract = await new ethers.Contract(
-      '0xF09293966F92F25757BA2CE502036C7D2032911D',
-      bankArtifact.abi
-    );
-    const _provider = await new ethers.providers.InfuraProvider(
-      'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
-    );
-    bankContract
-      .connect(_provider)
-      .getWhitelistedSymbols()
-      .then(async (result) => {
-        result.map((s) => {
-          toString(s);
-          _symbols.push(toString(s));
-        });
-
-        console.log(_symbols);
-        console.log('length is ', _symbols.length);
-        for (var symbol in _symbols) {
-          const balance = await getTokenBalance(_symbols[symbol], signer);
-          setTokenBalances((prev) => ({
-            ...prev,
-            [symbol]: balance.toString(),
-          }));
-          console.log(_symbols[symbol]);
-        }
-      });
-
-    console.log('token balances is ', tokenBalances);
+  const getTokenBalances = (signer) => {
+    tokenSymbols.map(async (symbol) => {
+      const balance = await getTokenBalance(symbol, signer);
+      setTokenBalances((prev) => ({ ...prev, [symbol]: balance.toString() }));
+    });
   };
 
   const displayModal = (symbol) => {
@@ -205,25 +157,11 @@ export default function App() {
       const tokenContract = tokenContracts[symbol];
       tokenContract
         .connect(signer)
-        .approve(bankContract.address, wei, { gasLimit: 50000 })
+        .approve(bankContract.address, wei)
         .then(() => {
           bankContract.connect(signer).depositTokens(wei, toBytes32(symbol));
           console.log('deposit is klaar');
         });
-      // const accounts = await web3.eth.getAccounts();
-      // const tx = await bankContract.safeTransferFrom(
-      //   accounts[0],
-      //   bankContract.address,
-      //   symbol,
-      //   wei,
-      //   [],
-      //   {
-      //     gasLimit: 1000000,
-      //   }
-      // );
-      // await signer.sendTransaction(tx);
-
-      console.log('sukses!');
     }
   };
 
@@ -262,7 +200,6 @@ export default function App() {
   }
 
   const loadBank = async () => {
-    console.log('token balances is by load: ', tokenBalances);
     depositTokens(toWei('500'), 'T1');
     await sleep(3500);
     depositTokens(toWei('500'), 'T2');
@@ -359,7 +296,7 @@ export default function App() {
                     >
                         <option value="T1">T1</option> {' '}
                       <option value="T2">T2</option>
-                      <option value="T3">T3</option>
+                      <option value="T3">Tether</option>
                     </select>
                     For
                     {exchangeRate}
@@ -370,7 +307,7 @@ export default function App() {
                     >
                         <option value="T1">T1</option> {' '}
                       <option value="T2">T2</option>
-                      <option value="T3">T3</option>
+                      <option value="T3">Tether</option>
                     </select>
                   </div>
                 </div>

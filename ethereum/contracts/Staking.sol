@@ -36,7 +36,7 @@ contract Staking {
     function stakeEther(uint _numDays) external payable {
         require(tiers[_numDays]>0, "mapping not found"); 
         uint256 totalLoans = address(this).balance + msg.value + calculateInterest(tiers[_numDays], _numDays, msg.value); 
-        if(totalLoans<maximumLiquidity)
+        if(totalLoans>=maximumLiquidity)
         liquidate(); 
         positions[currentPositionID] = Position(currentPositionID, 
         msg.sender, 

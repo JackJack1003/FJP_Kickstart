@@ -17,7 +17,7 @@ async function connect() {
     console.log(err);
   }
 }
-connect();
+//connect();
 
 const routes = require('./routes');
 const handler = routes.getRequestHandler(app);

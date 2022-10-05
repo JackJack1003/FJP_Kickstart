@@ -9,6 +9,7 @@ import web3 from '../ethereum/web3';
 import { Mongoose } from 'mongoose';
 import { client } from '../lib/sanityClient';
 var crypto = require('crypto');
+// Initialising the canvas
 
 class Login extends Component {
   state = {
@@ -18,6 +19,7 @@ class Login extends Component {
     userName: '',
     walletAddress: '',
   };
+
   loginFunc = async () => {
     console.log('login begin');
     const query = `
@@ -96,24 +98,40 @@ class Login extends Component {
   };
   render() {
     return (
-      <div>
-        <Link route="/home">
-          <a>
-            <button onClick={() => this.loginFunc()}>Login</button>
-          </a>
-        </Link>
+      <div className="index_page">
+        <div className="index_heading">
+          A Better Banking System Using Blockchain
+        </div>
         <input
+          className="index_input_username"
           value={this.state.userName}
           placeholder="Enter username"
           onChange={(e) => this.setState({ userName: e.target.value })}
         />
         <input
           value={this.state.password}
+          className="index_input_password"
           placeholder="Enter password"
           onChange={(e) => this.setState({ password: e.target.value })}
         />
+        <Link route="/home">
+          <a>
+            <button
+              className="index_button_login"
+              onClick={() => this.loginFunc()}
+            >
+              Login
+            </button>
+          </a>
+        </Link>
+        <div className="index_text_or">Or...</div>
 
-        <button onClick={() => this.callCreate()}>Sign up</button>
+        <button
+          className="index_button_signup"
+          onClick={() => this.callCreate()}
+        >
+          Sign up
+        </button>
       </div>
     );
   }

@@ -11,14 +11,13 @@ contract Loan {
   mapping(bytes32 => address) public whitelistedTokens;
   mapping(address => mapping(bytes32 => uint256)) public balances;
 //staking var begin
-      address public owner; 
     uint maximumLiquidity = 1000000000000000000; 
     struct Position {
         uint positionID; 
         address walletAddress;  
-        uint weiStaked; 
-        bytes32 sentSymbol, 
-        uint sentValue
+        uint weiStaked;
+        bytes32 sentSymbol; 
+        uint sentValue;
         bool opened; 
     }
 
@@ -29,7 +28,7 @@ contract Loan {
 
   constructor() payable{
     owner = msg.sender;
-        currentPositionID = 0; 
+    currentPositionID = 0; 
   }
 
   function whitelistToken(bytes32 symbol, address tokenAddress) external {
@@ -53,7 +52,6 @@ contract Loan {
 
   function withdrawEther(uint amount) external {
     require(balances[msg.sender]['Eth'] >= amount, 'Insufficient funds');
-
     balances[msg.sender]['Eth'] -= amount;
     payable(msg.sender).call{value: amount}("");
   }
@@ -63,9 +61,12 @@ contract Loan {
     IERC20(whitelistedTokens[symbol]).transferFrom(msg.sender, address(this), amount);
   }
 
+  function setWeiStaked(uint256 _wei) external {
+    positions[currentPositionID].weiStaked = _wei; 
+  }
+
   function withdrawTokens(uint256 amount, bytes32 symbol) external {
     require(balances[msg.sender][symbol] >= amount, 'Insufficient funds');
-
     balances[msg.sender][symbol] -= amount;
     IERC20(whitelistedTokens[symbol]).transfer(msg.sender, amount);
   }
@@ -82,11 +83,10 @@ contract Loan {
         msg.sender, 
         msg.value,
         _symbol, 
-        _sentValue
+        _valueSent,
         true );
         positionIdByAddress[msg.sender].push(currentPositionID); 
         currentPositionID +=1;  
-
     }
 
     function getPositionById(uint _positionId) external view returns(Position memory ) {
@@ -99,16 +99,19 @@ contract Loan {
     }
 
 
-    function closePosition (uint _positionId) external  {
+    function closePosition (uint _positionId, uint payBack, bytes32 payBackSymbol) external returns(bool)  {
         //require(owner == msg.sender, "Only owner may modify Staking periods"); 
         require(positions[_positionId].walletAddress == msg.sender, "Only owner can close position");
         require(positions[_positionId].opened == true, "Position is already closed"); 
-        positions[_positionId].opened = false; 
-
-            payable(msg.sender).call{value:positions[_positionId].weiStaked }("");
-            this.withdrawTokens(positions[_positionId].sentValue, positions[_positionId].sentSymbol);  
-
-
+        if (payBack>=positions[_positionId].sentValue 
+        && payBackSymbol == positions[_positionId].sentSymbol) {
+            positions[_positionId].opened = false; 
+            payable(msg.sender).call{value:positions[_positionId].weiStaked }(""); 
+            return (true);
+        }
+        else {
+          return (false); 
+        }
         
 
     }

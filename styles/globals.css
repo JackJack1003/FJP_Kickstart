@@ -9,3 +9,54 @@ body {
 h1 {
   font-size: 1.75rem;
 }
+.index_heading {
+  font-size: xx-large;
+  font-weight: 500;
+  position: absolute;
+  top: 10vh;
+  left: 27vw;
+}
+.index_input_username {
+  color: rgb(214, 168, 40);
+  width: 240px;
+  position: absolute;
+  top: 40vh;
+  left: 28vw;
+}
+.index_input_password {
+  color: rgb(214, 168, 40);
+  width: 240px;
+  position: absolute;
+  top: 40vh;
+  left: 50vw;
+}
+
+body {
+  background-color: rgb(0, 150, 240);
+  opacity: 1;
+}
+
+.index_button_login {
+  color: black;
+  background-color: rgb(0, 120, 190);
+  position: absolute;
+  top: 50vh;
+  left: 35vw;
+  font-weight: 100;
+  width: 120px;
+}
+.index_text_or {
+  position: absolute;
+  top: 50vh;
+  left: 47vw;
+}
+
+.index_button_signup {
+  color: black;
+  position: absolute;
+  top: 50vh;
+  left: 54vw;
+  background-color: rgb(0, 120, 190);
+  font-weight: 100;
+  width: 120px;
+}

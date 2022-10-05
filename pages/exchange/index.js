@@ -288,6 +288,7 @@ export default function App() {
 
     //let multiplier = markets[keys[2]].precision.price;
     console.log('multiplier is: ', multiplier);
+    console.log(depositSym, withdrawSym);
 
     setDepositValue(_value);
     setExchangeRate((_value * multiplier).toString());

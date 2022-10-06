@@ -4,12 +4,11 @@ import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
-import { Router } from '../routes';
 import web3 from '../ethereum/web3';
 import { Mongoose } from 'mongoose';
 import { client } from '../lib/sanityClient';
+import Router from 'next/router';
 var crypto = require('crypto');
-// Initialising the canvas
 
 class Login extends Component {
   state = {
@@ -40,8 +39,17 @@ class Login extends Component {
           .pbkdf2Sync(this.state.password, dbSalt, 1000, 64, `sha512`)
           .toString(`hex`),
       });
-      if (this.state.newPassword == dbPass) console.log('Password match');
-      else console.log('no pass!');
+      const myNewPassword = await crypto
+        .pbkdf2Sync(this.state.password, dbSalt, 1000, 64, `sha512`)
+        .toString(`hex`);
+      console.log(dbPass);
+      console.log(myNewPassword);
+      if (myNewPassword == dbPass) {
+        console.log('Password match');
+        Router.push(`/home`);
+      } else {
+        window.alert('Username and password do not match');
+      }
     }
   };
 
@@ -90,6 +98,7 @@ class Login extends Component {
         //save user
         this.saveUser().then((response) => {
           console.log(response);
+          Router.push(`/home`);
         });
       } catch (err) {
         console.log(err);
@@ -114,16 +123,11 @@ class Login extends Component {
           placeholder="Enter password"
           onChange={(e) => this.setState({ password: e.target.value })}
         />
-        <Link route="/home">
-          <a>
-            <button
-              className="index_button_login"
-              onClick={() => this.loginFunc()}
-            >
-              Login
-            </button>
-          </a>
-        </Link>
+
+        <button className="index_button_login" onClick={() => this.loginFunc()}>
+          Login
+        </button>
+
         <div className="index_text_or">Or...</div>
 
         <button

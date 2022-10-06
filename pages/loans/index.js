@@ -331,25 +331,24 @@ export default function App() {
   return (
     <div className="App">
       <BigNavBar />
-      <header className="App-header">
+      <header className="exchange_App_Header">
         {isConnected() ? (
           <div>
             <p>Welcome {signerAddress?.substring(0, 10)}...</p>
-            <button onClick={() => setStaked('0.01')}>Set! </button>
             <div>
-              <div className="list-group">
-                <div className="list-group-item">
-                  <div className="loadBank">
+              <div>
+                <div>
+                  {/* <div>
                     <button onClick={() => loadBank()}> Load bank!</button>
-                  </div>
-                  <button onClick={() => getVars()}>Get Vars </button>
+                  </div> */}
 
                   {assets.length > 0 &&
                     assets.map((a, idx) => (
-                      <div className="row">
-                        <div className="col-md-2">
+                      <div>
+                        <div>
                           {a.opened ? (
                             <div
+                              className="loans_Position"
                               onClick={() =>
                                 withdraw(
                                   a.positionID,
@@ -357,16 +356,16 @@ export default function App() {
                                   a.sentSymbol
                                 )
                               }
-                              className="orangeMiniButton"
                             >
-                              <div className="col-md-2"></div>
-                              <div className="col-md-2">
-                                {a.percentInterest} %
-                              </div>
-                              <div className="col-md-2">{a.etherStaked}</div>
-                              <div className="col-md-2">{a.sentValue}</div>
-                              <div className="col-md-2">{a.sentSymbol}</div>
-                              Withdraw
+                              <div></div>
+                              <div>{a.percentInterest} %</div>
+                              <div>{a.etherStaked}</div>
+                              <div>{a.sentValue}</div>
+                              <div>{a.sentSymbol}</div>
+                              <button className="loans_Withdraw_Button">
+                                {' '}
+                                Withdraw
+                              </button>
                             </div>
                           ) : (
                             <span>closed</span>
@@ -374,20 +373,6 @@ export default function App() {
                         </div>
                       </div>
                     ))}
-                  {Object.keys(tokenBalances).map((symbol, idx) => (
-                    <div className=" row d-flex py-3" key={idx}>
-                      <div className="col-md-3">
-                        <div>{symbol.toUpperCase()}</div>
-                      </div>
-
-                      <div className="d-flex gap-4 col-md-3">
-                        <small className="opacity-50 text-nowrap">
-                          {toRound(tokenBalances[symbol])}
-                        </small>
-                      </div>
-                    </div>
-                    // </div>
-                  ))}
 
                   <div>
                     Loan
@@ -413,6 +398,7 @@ export default function App() {
                   </div>
                 </div>
                 <button
+                  className="loans_Withdraw_Button"
                   onClick={() =>
                     stakeEther(depositValue, depositSym, exchangeRate)
                   }
@@ -425,9 +411,7 @@ export default function App() {
         ) : (
           <div>
             <p>You are not connected</p>
-            <button onClick={connect} className="btn btn-primary">
-              Connect Metamask
-            </button>
+            <button onClick={connect}>Connect Metamask</button>
           </div>
         )}
       </header>

@@ -35,28 +35,8 @@ class CampaignShow extends Component {
       {
         header: manager,
         meta: 'Address of Manager',
-        description:
-          'The manager created this banking account and can create requests to withdraw money',
-        style: { overflowWrap: 'break-word' },
       },
-      {
-        header: minimumContribution,
-        meta: 'in Wei',
-        description: 'Least amount',
-        style: { overflowWrap: 'break-word' },
-      },
-      // {
-      //   header: requestsCount,
-      //   meta: 'How many requests',
-      //   description: 'Requests must be approved',
-      //   style: { overflowWrap: 'break-word' },
-      // },
-      // {
-      //   header: approversCount,
-      //   meta: 'Total Approvers',
-      //   description: 'Need a 51% approval',
-      //   style: { overflowWrap: 'break-word' },
-      // },
+
       {
         header: web3.utils.fromWei(balance, 'ether'),
         meta: 'Balance for account',
@@ -72,10 +52,8 @@ class CampaignShow extends Component {
     return (
       <Layout>
         <h3>Show bank accounts</h3>
-        {this.renderCards()}
-        <Link route={`/campaigns/${this.props.address}/requests`}>
-          <a> {/* <Button>View requests</Button> */}</a>
-        </Link>
+        <div className="show">{this.renderCards()}</div>
+
         <ContributeForm address={this.props.address} />
       </Layout>
     );

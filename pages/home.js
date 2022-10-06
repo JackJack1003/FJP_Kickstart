@@ -59,30 +59,28 @@ class Home extends Component {
       <Layout>
         <BigNavBar />
         <div>
-          <h3>Open bank account</h3>
-          <Link route="/campaigns/new">
-            <a>
-              <Button
-                floated="right"
-                content="Add account"
-                icon="add circle"
-                primary
-              />
-            </a>
-          </Link>
-          <input
-            onChange={(e) => {
-              this.setState({ searchUser: e.target.value });
-            }}
-            placeholder="Search by username"
-          />
+          <h2>Search a Beneficary to pay</h2>
+          <div className="home_Search">
+            <input
+              onChange={(e) => {
+                this.setState({ searchUser: e.target.value });
+              }}
+              placeholder="Search by username"
+            />
+            <button
+              className="loans_Withdraw_Button"
+              onClick={() => this.searchFunc()}
+            >
+              {' '}
+              Search
+            </button>
+          </div>
+
           <a>
             <button onClick={() => this.viewTrans()}>
               View Transaction History
             </button>
           </a>
-
-          <button onClick={() => this.searchFunc()}> Search</button>
           <Beneficary
             _user={this.state.userName}
             _address={this.state.userAddress}

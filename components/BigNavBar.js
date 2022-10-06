@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from '../routes';
+import web3 from '../ethereum/web3';
 
 function BigNavBar() {
   return (
     <div>
-      BigNavBar
-      <Link route="/home">
-        <button> Transactions </button>
-      </Link>
-      <Link route="/exchange">
-        <button> Exchange </button>
-      </Link>
-      <Link route="/stake">
-        <button> Stake </button>
-      </Link>
+      <div className="navBar">
+        <div className="navBar_Welcome">Welcome Joey</div>
+        <div className="navBar_buttonGroup">
+          <Link route="/home">
+            <button className="navBar_button"> Transactions </button>
+          </Link>
+          <Link route="/exchange">
+            <button className="navBar_button"> Exchange </button>
+          </Link>
+          <Link route="/stake">
+            <button className="navBar_button"> Stake </button>
+          </Link>
+          <Link route="/loans">
+            <button className="navBar_button"> Loans </button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

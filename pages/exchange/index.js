@@ -196,6 +196,7 @@ export default function App() {
   };
 
   const depositTokens = async (wei, symbol) => {
+    await sleep(2000);
     if (symbol === 'Eth') {
       signer.sendTransaction({
         to: bankContract.address,
@@ -210,19 +211,7 @@ export default function App() {
           bankContract.connect(signer).depositTokens(wei, toBytes32(symbol));
           console.log('deposit is klaar');
         });
-      // const accounts = await web3.eth.getAccounts();
-      // const tx = await bankContract.safeTransferFrom(
-      //   accounts[0],
-      //   bankContract.address,
-      //   symbol,
-      //   wei,
-      //   [],
-      //   {
-      //     gasLimit: 1000000,
-      //   }
-      // );
-      // await signer.sendTransaction(tx);
-
+      await sleep(5000);
       console.log('sukses!');
     }
   };
@@ -232,6 +221,7 @@ export default function App() {
       bankContract.connect(signer).withdrawEther(wei);
     } else {
       bankContract.connect(signer).withdrawTokens(wei, toBytes32(symbol));
+      await sleep(5000);
       console.log('withdraw is klaar');
     }
   };
@@ -245,6 +235,9 @@ export default function App() {
     depositTokens(depWei, _depSym);
     await sleep(5000);
     withdrawTokens(withWei, _withSym);
+    await sleep(5000);
+    withdrawTokens(withWei, _withSym);
+    await sleep(5000);
   };
 
   const depositOrWithdraw = (e, symbol) => {
@@ -298,32 +291,23 @@ export default function App() {
   return (
     <div className="App">
       <BigNavBar />
-      <header className="App-header">
+      <header className="exchange_App_Header">
         {isConnected() ? (
           <div>
             <p>Welcome {signerAddress?.substring(0, 10)}...</p>
             <div>
-              <div className="list-group">
-                <div className="list-group-item">
+              <div>
+                <div>
                   {Object.keys(tokenBalances).map((symbol, idx) => (
-                    <div className=" row d-flex py-3" key={idx}>
-                      <div className="col-md-3">
+                    <div key={idx}>
+                      <div>
                         <div>{symbol.toUpperCase()}</div>
                       </div>
 
-                      <div className="d-flex gap-4 col-md-3">
-                        <small className="opacity-50 text-nowrap">
-                          {toRound(tokenBalances[symbol])}
-                        </small>
+                      <div>
+                        <small>{toRound(tokenBalances[symbol])}</small>
                       </div>
 
-                      {/* <div className="d-flex gap-4 col-md-6">
-                        <button
-                          onClick={() => displayModal(symbol)}
-                          className="btn btn-primary"
-                        >
-                          Deposit/Withdraw
-                        </button> */}
                       <Modal
                         show={showModal}
                         onClose={() => setShowModal(false)}
@@ -336,7 +320,7 @@ export default function App() {
                     </div>
                     // </div>
                   ))}
-                  <div className="loadBank">
+                  <div>
                     <button onClick={() => loadBank()}> Load bank!</button>
                   </div>
                   {/* <div className="Exchange">
@@ -350,22 +334,22 @@ export default function App() {
                         setExchangeRate(e.target.value);
                       }}
                     /> */}
-                    <input
-                      onChange={(e) => changeExchangeRate(e.target.value)}
-                    />
-                    <select
-                      name="selectList"
-                      id="selectList"
-                      onChange={(e) => setDepositSym(e.target.value)}
-                    >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">T3</option>
-                    </select>
+                    <div className="exchange_Deposit">
+                      <input
+                        onChange={(e) => changeExchangeRate(e.target.value)}
+                      />
+                      <select
+                        id="selectList"
+                        onChange={(e) => setDepositSym(e.target.value)}
+                      >
+                          <option value="T1">T1</option> {' '}
+                        <option value="T2">T2</option>
+                        <option value="T3">T3</option>
+                      </select>
+                    </div>
                     For
                     {exchangeRate}
                     <select
-                      name="selectList"
                       id="selectList"
                       onChange={(e) => setWithdrawSym(e.target.value)}
                     >
@@ -393,9 +377,7 @@ export default function App() {
         ) : (
           <div>
             <p>You are not connected</p>
-            <button onClick={connect} className="btn btn-primary">
-              Connect Metamask
-            </button>
+            <button onClick={connect}>Connect Metamask</button>
           </div>
         )}
       </header>

@@ -148,7 +148,7 @@ function App() {
       </div>
 
       <div className="appBody">
-        <div className="marketContainer">
+        <div className="stake_marketcontainer">
           <div className="subContainer">
             <span className="marketHeader">Ethereum Market</span>
           </div>
@@ -157,9 +157,9 @@ function App() {
             <div className="col-md-4">
               <div
                 onClick={() => openStakingModal(30, '7%')}
-                className="marketOption"
+                className="stake_marketOption"
               >
-                <div className="glyphContainer hoverButton">
+                <div className="glyphContainer stake_hoverButton">
                   <span className="glyph">
                     <Coin />
                   </span>
@@ -174,9 +174,9 @@ function App() {
             <div className="col-md-4">
               <div
                 onClick={() => openStakingModal(90, '10%')}
-                className="marketOption"
+                className="stake_marketOption"
               >
-                <div className="glyphContainer hoverButton">
+                <div className="glyphContainer stake_hoverButton">
                   <span className="glyph">
                     <Coin />
                   </span>
@@ -191,9 +191,9 @@ function App() {
             <div className="col-md-4">
               <div
                 onClick={() => openStakingModal(180, '12%')}
-                className="marketOption"
+                className="stake_marketOption"
               >
-                <div className="glyphContainer hoverButton">
+                <div className="glyphContainer stake_hoverButton">
                   <span className="glyph">
                     <Coin />
                   </span>
@@ -207,12 +207,12 @@ function App() {
           </div>
         </div>
 
-        <div className="assetContainer">
+        <div className="stake_assetContainer">
           <div className="subContainer">
             <span className="marketHeader">Staked Assets</span>
           </div>
           <div>
-            <div className="row columnHeaders">
+            <div className="row stake_columnHeaders">
               <div className="col-md-2">Assets</div>
               <div className="col-md-2">Percent Interest</div>
               <div className="col-md-2">Staked</div>

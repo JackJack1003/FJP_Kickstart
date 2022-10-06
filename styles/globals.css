@@ -60,3 +60,313 @@ body {
   font-weight: 100;
   width: 120px;
 }
+
+/* Stake */
+
+.App {
+  background-color: #fff;
+  text-align: center;
+  min-height: 100vh; /* required for full page background */
+}
+
+#root {
+  min-height: 100vh; /* required for full page background */
+}
+
+.appBody {
+  height: 100%;
+  margin-top: 80px;
+}
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/* Nav Bar */
+.navButton {
+  float: left;
+  display: inline-block;
+  margin-left: 24px;
+  padding: 5px;
+  color: #1168f1;
+  font-size: 24px;
+}
+.connectButton {
+  float: right;
+  margin-right: 24px;
+  background-color: #1168f1;
+  border-radius: 4px;
+  padding: 5px 15px;
+  color: #f1f1f3;
+  font-size: 24px;
+  cursor: pointer;
+}
+.connectButton:hover {
+  background-color: #f90;
+}
+.navBar {
+  padding-top: 18px;
+  overflow: hidden;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(17, 104, 241, 0.08);
+}
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/* Market */
+.stake_marketcontainer {
+  background-color: #1168f1;
+  width: 620px;
+  height: 170px;
+  margin: 0 auto;
+  top: 50%;
+  border-radius: 24px;
+  padding: 8px;
+}
+.subContainer {
+  margin-bottom: 20px;
+}
+.stake_marketOption {
+  display: flex;
+  margin-left: 60px;
+  float: right;
+}
+.optionData {
+  margin-left: 10px;
+  color: #fff;
+  font-weight: 700;
+}
+.optionPercent {
+  display: block;
+  font-size: 24px;
+  font-weight: 1000;
+  color: #f90;
+}
+.logoImg {
+  background-color: #fff;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  margin-right: 14px;
+  width: 28px;
+  height: 28px;
+}
+.marketHeader {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 800;
+}
+.stake_hoverButton:hover {
+  background: #f90;
+  cursor: pointer;
+}
+.stake_hoverButton:active {
+  /* box-shadow: 0 0 0 white; */
+  box-shadow: inset;
+}
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/* Assets */
+.stake_assetContainer {
+  background-color: #1168f1;
+  width: 620px;
+  min-height: 225px;
+  margin: 0 auto;
+  top: 50%;
+  border-radius: 24px;
+  padding: 6px;
+  padding: 8px;
+  margin-top: 50px; /* space between sections */
+  color: #fff;
+  font-weight: 500;
+}
+.stake_columnHeaders {
+  font-weight: 800;
+  color: #f90;
+}
+.stakedLogoImg {
+  background-color: #fff;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  margin-right: 14px;
+  width: 18px;
+  height: 18px;
+}
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/* Glyphs */
+.glyphContainer {
+  background-color: #fff;
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+}
+.glyph {
+  font-size: 34px;
+}
+
+/******************************************************************************/
+/* Stake Modal */
+.modal-class {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: -400px;
+  right: 0px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(86, 90, 105);
+}
+.modal-content {
+  background-color: #fff;
+  width: 300px !important;
+  padding: 0px 15px;
+  background-color: rgb(237, 238, 242) !important;
+  border: 1px solid rgb(206, 208, 217) !important;
+  border-radius: 12px !important;
+}
+.fieldContainer {
+  padding-left: 0px !important;
+}
+.inputField {
+  padding-left: 10px;
+  border-radius: 36px;
+  border: 1px solid #65cdee;
+  height: 2rem;
+  margin: 10px 0;
+  width: 100%;
+}
+.inputFieldUnitsContainer {
+  padding-left: 0px !important;
+  padding-top: 14px;
+}
+.orangeButton {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 24px;
+  color: #fff;
+  border-radius: 20px;
+  background-color: #dd2f81;
+  cursor: pointer;
+}
+.orangeMiniButton {
+  width: 100%;
+  height: 25px;
+  line-height: 25px;
+  font-size: 12px;
+  color: #000;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+}
+.orangeMiniButton:hover {
+  color: #fff;
+  background-color: #f90;
+}
+.stakingTerms {
+  color: blue;
+}
+
+/* Exchange */
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.exchange_App_Header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* 
+NavBar */
+
+.navBar {
+  position: relative;
+  width: 75%;
+  left: 0%;
+  top: 0%;
+  height: 35px;
+  background-color: rgb(150, 150, 150);
+}
+
+.navBar_buttonGroup {
+  position: relative;
+  left: 30%;
+  bottom: 80%;
+  background-color: rgb(64, 128, 200);
+  width: 500px;
+  height: 45px;
+}
+
+.navBar_button {
+  margin-left: 15px;
+  margin-top: 10px;
+  width: 20%;
+}
+
+.navBar_Welcome {
+  margin-left: 25px;
+  font-size: larger;
+  font-weight: 900;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.benificary {
+  background-color: lightgray;
+  width: 30%;
+  margin-top: 15px;
+}
+.home_Search {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.show {
+  width: 30%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: lightgray;
+}
+.history_Info {
+  background-color: lightblue;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 40%;
+}
+
+.exchange_Deposit {
+  float: inline-start;
+}
+
+.loans_Position {
+  background-color: darkblue;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 175px;
+}
+.loans_Withdraw_Button {
+  background-color: #f90;
+  border-radius: 10%;
+  border: 1px solid orange;
+}

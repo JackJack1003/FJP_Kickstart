@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link } from '../routes';
 import web3 from '../ethereum/web3';
+import Cookies from 'js-cookie';
 
 function BigNavBar() {
+  const logOut = () => {
+    Cookies.remove('loggedin');
+  };
   return (
     <div>
       <div className="navBar">
@@ -19,6 +23,12 @@ function BigNavBar() {
           </Link>
           <Link route="/loans">
             <button className="navBar_button"> Loans </button>
+          </Link>
+          <Link route="/">
+            <button className="navBar_button" onClick={() => logOut()}>
+              {' '}
+              Logout{' '}
+            </button>
           </Link>
         </div>
       </div>

@@ -328,35 +328,44 @@ export default function App() {
                   </div> */}
 
                   <div>
-                    Deposit
                     {/* <input
                       onChange={(e) => {
                         setExchangeRate(e.target.value);
                       }}
                     /> */}
                     <div className="exchange_Deposit">
-                      <input
-                        onChange={(e) => changeExchangeRate(e.target.value)}
-                      />
-                      <select
-                        id="selectList"
-                        onChange={(e) => setDepositSym(e.target.value)}
-                      >
-                          <option value="T1">T1</option> {' '}
-                        <option value="T2">T2</option>
-                        <option value="T3">T3</option>
-                      </select>
+                      Deposit
+                      <div className="exchange_Deposit_Input">
+                        <input
+                          onChange={(e) => changeExchangeRate(e.target.value)}
+                        />
+                        <div className="exchange_Deposit_Select">
+                          <select
+                            id="selectList"
+                            onChange={(e) => setDepositSym(e.target.value)}
+                          >
+                              <option value="T1">T1</option> {' '}
+                            <option value="T2">T2</option>
+                            <option value="T3">T3</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    For
-                    {exchangeRate}
-                    <select
-                      id="selectList"
-                      onChange={(e) => setWithdrawSym(e.target.value)}
-                    >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">T3</option>
-                    </select>
+                    <div className="exchange_Withdraw">
+                      <div className="exchange_Withdraw_For">For</div>
+
+                      {exchangeRate}
+                      <div className="exchange_Withdraw_Select">
+                        <select
+                          id="selectList"
+                          onChange={(e) => setWithdrawSym(e.target.value)}
+                        >
+                            <option value="T1">T1</option> {' '}
+                          <option value="T2">T2</option>
+                          <option value="T3">T3</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <button

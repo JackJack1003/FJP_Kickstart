@@ -8,6 +8,8 @@ import web3 from '../ethereum/web3';
 import { Mongoose } from 'mongoose';
 import { client } from '../lib/sanityClient';
 import Router from 'next/router';
+import Cookies from 'js-cookie';
+
 var crypto = require('crypto');
 
 class Login extends Component {
@@ -46,6 +48,7 @@ class Login extends Component {
       console.log(myNewPassword);
       if (myNewPassword == dbPass) {
         console.log('Password match');
+        Cookies.set('loggedin', true);
         Router.push(`/home`);
       } else {
         window.alert('Username and password do not match');
@@ -98,6 +101,7 @@ class Login extends Component {
         //save user
         this.saveUser().then((response) => {
           console.log(response);
+          Cookies.set('loggedin', true);
           Router.push(`/home`);
         });
       } catch (err) {

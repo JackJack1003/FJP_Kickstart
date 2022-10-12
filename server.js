@@ -7,6 +7,8 @@ const uri =
 
 const app = next({
   dev: process.env.NODE_ENV !== 'production',
+  hostname: 'localhost',
+  port: 3001,
 });
 
 async function connect() {

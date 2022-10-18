@@ -27,9 +27,10 @@ class history extends Component {
     for (let id of Object.keys(this.state.clientInfo)) {
       rendered.push(
         <div className="history_Info">
-          {' '}
-          <h4>{this.state.clientInfo[id].toAddress}</h4>{' '}
+          To:
+          <h4>{this.state.clientInfo[id].toAddress}</h4> For an amount of:
           <h4>{this.state.clientInfo[id].amount}</h4>
+          On:
           <h4>{this.state.clientInfo[id].timeStamp}</h4>
         </div>
       );
@@ -40,9 +41,11 @@ class history extends Component {
     return (
       <div>
         <BigNavBar />
-        <h1> History</h1>
+        <div className="history_title">
+          <h2> History</h2>
+        </div>
 
-        {this.showClient()}
+        <div className="history_content">{this.showClient()}</div>
       </div>
     );
   }

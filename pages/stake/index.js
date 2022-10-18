@@ -39,13 +39,13 @@ function App() {
 
       const provider = await new ethers.providers.InfuraProvider(
         'goerli',
-        'cf39d39ac33347f7959e2575d8e5b5c9'
+        process.env.NEXT_PUBLIC_GOERLI_Provider
       );
       setProvider(provider);
 
       console.log('provider is nie probleem nie');
       const wallet = await new ethers.Wallet(
-        '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
+        process.env.NEXT_PUBLIC_WALLET_PRIVATE,
         provider
       );
       console.log('wallet is: ', wallet);

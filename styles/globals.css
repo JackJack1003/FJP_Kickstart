@@ -16,12 +16,13 @@ h1 {
   top: 10vh;
   left: 27vw;
 }
-.index_input_username {
+
+.index_input_email {
   color: rgb(214, 168, 40);
   width: 240px;
   position: absolute;
   top: 40vh;
-  left: 28vw;
+  left: 30vw;
 }
 .index_input_password {
   color: rgb(214, 168, 40);
@@ -29,6 +30,29 @@ h1 {
   position: absolute;
   top: 40vh;
   left: 50vw;
+}
+
+.signup_input_username {
+  color: rgb(214, 168, 40);
+  width: 240px;
+  position: absolute;
+  top: 40vh;
+  left: 40vw;
+}
+
+.signup_input_email {
+  color: rgb(214, 168, 40);
+  width: 240px;
+  position: absolute;
+  top: 45vh;
+  left: 40vw;
+}
+.signup_input_password {
+  color: rgb(214, 168, 40);
+  width: 240px;
+  position: absolute;
+  top: 50vh;
+  left: 40vw;
 }
 
 body {
@@ -41,24 +65,44 @@ body {
   background-color: rgb(0, 120, 190);
   position: absolute;
   top: 50vh;
-  left: 35vw;
+  left: 45vw;
   font-weight: 100;
   width: 120px;
 }
 .index_text_or {
   position: absolute;
-  top: 50vh;
-  left: 47vw;
+  top: 55vh;
+  left: 45vw;
 }
 
 .index_button_signup {
   color: black;
   position: absolute;
-  top: 50vh;
-  left: 54vw;
+  top: 60vh;
+  left: 45vw;
   background-color: rgb(0, 120, 190);
   font-weight: 100;
   width: 120px;
+}
+.index_inputs {
+  background-color: grey;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.signup_button_signup {
+  color: black;
+  position: absolute;
+  top: 60vh;
+  left: 43vw;
+  background-color: rgb(0, 120, 190);
+  font-weight: 100;
+  width: 120px;
+}
+
+.signup_inputs {
+  background-color: darkgray;
 }
 
 /* Stake */
@@ -306,6 +350,13 @@ NavBar */
   top: 0%;
   height: 35px;
   background-color: rgb(150, 150, 150);
+  margin-left: 15%;
+  margin-right: 15%;
+  justify-content: center;
+}
+
+.login_banner {
+  width: 100%;
 }
 
 .navBar_buttonGroup {
@@ -332,25 +383,108 @@ NavBar */
 
 .benificary {
   background-color: lightgray;
-  width: 30%;
+  width: 100%;
   margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home_beneficary_username {
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+.home_beneficary_address {
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+.home_view_account {
+  margin-top: 15px;
+  display: flex;
+  margin-left: 50px;
+  justify-content: center;
+  align-items: center;
+  background-color: #f90;
+  width: 75%;
+}
+.home_heading {
+  /* float: left; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 15px;
+}
+.home_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .home_Search {
   margin-top: 15px;
   margin-bottom: 15px;
 }
 
+.home_trans_his {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home_beneficary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .show {
-  width: 30%;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  /* width: 30%; */
+  /* margin-top: 15px;
+  margin-bottom: 15px; */
   background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.show_info {
+  margin-left: 415px;
+  margin-top: 15px;
+  margin-right: 415px;
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.show_contribute {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  align-items: center;
 }
 .history_Info {
   background-color: lightblue;
   margin-top: 15px;
   margin-bottom: 15px;
-  width: 40%;
+
+  width: 100%;
+}
+
+.history_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.history_content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .exchange_Deposit {
@@ -386,4 +520,36 @@ NavBar */
   background-color: #f90;
   border-radius: 10%;
   border: 1px solid orange;
+}
+.loan_deposit_input {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 15px;
+}
+
+.loan_deposit_input_eth {
+  margin-left: 10px;
+}
+.loan_exchangerate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loan_exchangerate_select {
+  margin-left: 10px;
+}
+
+.loans_loan_button {
+  background-color: #f90;
+  border-radius: 5%;
+  border: 1px solid orange;
+  width: 150px;
+  margin-bottom: 35px;
+}
+
+.loan_loan {
+  background-color: darkgray;
 }

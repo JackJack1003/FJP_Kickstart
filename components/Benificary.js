@@ -9,10 +9,20 @@ function Beneficary({ _user, _address }) {
         <Link route={`/campaigns/${_address}`}>
           {_address !== '' ? (
             <div>
-              <a>{message}</a>
               <p>
-                {' '}
-                {_user} {_address}
+                <div className="home_beneficary_username">
+                  <b> Username:</b>
+                  {_user}
+                </div>
+                <div className="home_beneficary_address">
+                  <b> Address: </b> {_address}
+                </div>
+                <div className="home_view_account">
+                  <a>
+                    {' '}
+                    <b> {message} </b>{' '}
+                  </a>
+                </div>
               </p>
             </div>
           ) : (

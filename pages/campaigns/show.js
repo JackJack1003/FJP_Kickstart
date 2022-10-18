@@ -5,6 +5,7 @@ import Layout from '../../components/Layout';
 import Campaign from '../../ethereum/campaign';
 import web3 from '../../ethereum/web3';
 import { Link } from '../../routes';
+import BigNavBar from '../../components/BigNavBar';
 
 class CampaignShow extends Component {
   static async getInitialProps(props) {
@@ -34,14 +35,12 @@ class CampaignShow extends Component {
     const items = [
       {
         header: manager,
-        meta: 'Address of Manager',
+        meta: 'Address of Account',
       },
 
       {
         header: web3.utils.fromWei(balance, 'ether'),
         meta: 'Balance for account',
-        description: '',
-        style: { overflowWrap: 'break-word' },
       },
     ];
 
@@ -51,10 +50,16 @@ class CampaignShow extends Component {
   render() {
     return (
       <Layout>
-        <h3>Show bank accounts</h3>
-        <div className="show">{this.renderCards()}</div>
+        <BigNavBar />
 
-        <ContributeForm address={this.props.address} />
+        <div className="show">
+          <h3>Viewing Bank account</h3>
+        </div>
+        <div className="show_info">{this.renderCards()}</div>
+
+        <div className="show_contribute">
+          <ContributeForm address={this.props.address} />
+        </div>
       </Layout>
     );
   }

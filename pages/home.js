@@ -59,33 +59,40 @@ class Home extends Component {
       <Layout>
         <BigNavBar />
         <div>
-          <h2>Search a Beneficary to pay</h2>
-          <div className="home_Search">
-            <input
-              onChange={(e) => {
-                this.setState({ searchUser: e.target.value });
-              }}
-              placeholder="Search by username"
-            />
-            <button
-              className="loans_Withdraw_Button"
-              onClick={() => this.searchFunc()}
-            >
-              {' '}
-              Search
-            </button>
+          <div className="home_heading">
+            <h2>Search a Beneficary to pay</h2>
           </div>
-
-          <a>
-            <button onClick={() => this.viewTrans()}>
-              View Transaction History
-            </button>
-          </a>
-          <Beneficary
-            _user={this.state.userName}
-            _address={this.state.userAddress}
-          />
-          {this.renderCampaigns()}
+          <div className="home_box">
+            <div className="home_Search">
+              <input
+                onChange={(e) => {
+                  this.setState({ searchUser: e.target.value });
+                }}
+                placeholder="Search by username"
+              />
+              <button
+                className="loans_Withdraw_Button"
+                onClick={() => this.searchFunc()}
+              >
+                {' '}
+                Search
+              </button>
+            </div>
+          </div>
+          <div className="home_trans_his">
+            <a>
+              <button onClick={() => this.viewTrans()}>
+                View Transaction History
+              </button>
+            </a>
+          </div>
+          <div className="home_beneficary">
+            <Beneficary
+              _user={this.state.userName}
+              _address={this.state.userAddress}
+            />
+            {this.renderCampaigns()}
+          </div>
         </div>
       </Layout>
     );

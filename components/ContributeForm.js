@@ -58,8 +58,6 @@ class ContributeForm extends Component {
             onChange={(event) => {
               this.setState({ value: event.target.value });
             }}
-            label="ether"
-            labelPosition="right"
           ></Input>
         </Form.Field>
         <Button primary>Pay!</Button>

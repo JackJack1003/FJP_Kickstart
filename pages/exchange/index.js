@@ -1,5 +1,5 @@
 //import './App.css';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import Modal from './Modal.js';
 const ccxt = require('ccxt');
@@ -54,11 +54,16 @@ export default function App() {
       // setProvider(provider);
       const provider = await new ethers.providers.InfuraProvider(
         'goerli',
-        'cf39d39ac33347f7959e2575d8e5b5c9'
+        process.env.NEXT_PUBLIC_GOERLI_provider
+      );
+      console.log(
+        'DIEEEE Provider is: ',
+        process.env.NEXT_PUBLIC_GOERLI_provider
       );
       setProvider(provider);
+      console.log('DIe wallet is:', process.env.NEXT_PUBLIC_WALLET_PRIVATE);
       const wallet = new ethers.Wallet(
-        '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
+        process.env.NEXT_PUBLIC_WALLET_PRIVATE,
         provider
       );
       setWallet(wallet);
@@ -119,12 +124,16 @@ export default function App() {
   const getSigner = async (provider) => {
     const _provider = await new ethers.providers.InfuraProvider(
       'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
+      process.env.GOERLI_provider
+    );
+    console.log(
+      'DIEEEE Provider is: ',
+      process.env.NEXT_PUBLIC_GOERLI_provider
     );
     console.log('provider is', _provider);
     // provider.send('eth_requestAccounts', []);
     const _wallet = new ethers.Wallet(
-      '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
+      process.env.NEXT_PUBLIC_WALLET_PRIVATE,
       _provider
     );
     console.log('wallet is', _wallet);
@@ -164,7 +173,11 @@ export default function App() {
     );
     const _provider = await new ethers.providers.InfuraProvider(
       'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
+      process.env.NEXT_PUBLIC_GOERLI_provider
+    );
+    console.log(
+      'DIEEEE Provider is: ',
+      process.env.NEXT_PUBLIC_GOERLI_provider
     );
     bankContract
       .connect(_provider)
@@ -196,6 +209,19 @@ export default function App() {
   };
 
   const depositTokens = async (wei, symbol) => {
+    console.log(provider);
+    const bankContract = await new ethers.Contract(
+      '0xF09293966F92F25757BA2CE502036C7D2032911D',
+      bankArtifact.abi,
+      provider
+    );
+    // console.log('Hier1');
+    // const myDepGas = await bankContract.estimateGas.depositTokens(
+    //   wei,
+    //   toBytes32(symbol)
+    // );
+    // console.log('Hier2');
+    // console.log('Estimate vir depo is ', myDepGas.toNumber());
     await sleep(2000);
     if (symbol === 'Eth') {
       signer.sendTransaction({
@@ -212,7 +238,6 @@ export default function App() {
           console.log('deposit is klaar');
         });
       await sleep(5000);
-      console.log('sukses!');
     }
   };
 
@@ -233,8 +258,6 @@ export default function App() {
     const depWei = toWei(_depValue);
     // await getTokenContract();
     depositTokens(depWei, _depSym);
-    await sleep(5000);
-    withdrawTokens(withWei, _withSym);
     await sleep(5000);
     withdrawTokens(withWei, _withSym);
     await sleep(5000);
@@ -298,7 +321,7 @@ export default function App() {
             <div>
               <div>
                 <div>
-                  {Object.keys(tokenBalances).map((symbol, idx) => (
+                  {/* {Object.keys(tokenBalances).map((symbol, idx) => (
                     <div key={idx}>
                       <div>
                         <div>{symbol.toUpperCase()}</div>
@@ -319,7 +342,7 @@ export default function App() {
                       />
                     </div>
                     // </div>
-                  ))}
+                  ))} */}
                   <div>
                     <button onClick={() => loadBank()}> Load bank!</button>
                   </div>

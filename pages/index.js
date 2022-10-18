@@ -9,6 +9,7 @@ import { Mongoose } from 'mongoose';
 import { client } from '../lib/sanityClient';
 import Router from 'next/router';
 import Cookies from 'js-cookie';
+// import banner from './login_Banner.jpg';
 
 var crypto = require('crypto');
 
@@ -19,12 +20,13 @@ class Login extends Component {
     salt: '',
     userName: '',
     walletAddress: '',
+    userEmail: '',
   };
 
   loginFunc = async () => {
     console.log('login begin');
     const query = `
-    *[_type=="users" && userName == "${this.state.userName}"] { userName, password, salt
+    *[_type=="users" && email == "${this.state.userEmail}"] { email,userName, password, salt
     }
   `;
     const clientRes = await client.fetch(query);
@@ -64,7 +66,7 @@ class Login extends Component {
       _type: 'users',
       userName: this.state.userName,
       password: this.state.newPassword,
-      email: 'jack@coetzer.co.za',
+      email: this.userEmail,
       salt: this.state.salt,
       address: banks[banks.length - 1],
     };
@@ -72,71 +74,40 @@ class Login extends Component {
 
     return;
   };
-  callCreate = async () => {
-    console.log('hy het geclick');
-    try {
-      // const accounts = await web3.eth.getAccounts();
-      // await factory.methods.createCampaign('0').send({ from: accounts[0] });
-      console.log('call is geroep');
-      await this.setState({ salt: crypto.randomBytes(16).toString('hex') });
-      await this.setState({
-        newPassword: crypto
-          .pbkdf2Sync(this.state.password, this.state.salt, 1000, 64, `sha512`)
-          .toString(`hex`),
-      });
-      console.log(this.state.salt);
-      console.log(this.state.newPassword);
-    } catch (err) {
-      console.log(err);
-    }
-
-    const query = `
-    *[_type=="users" && userName == "${this.state.userName}"] { userName, password, salt
-    }
-  `;
-    const clientRes = await client.fetch(query);
-    if (clientRes.length <= 0) {
-      //skep nuwe account
-      try {
-        //save user
-        this.saveUser().then((response) => {
-          console.log(response);
-          Cookies.set('loggedin', true);
-          Router.push(`/home`);
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    }
+  callSignup = async () => {
+    Router.push('/signup');
   };
   render() {
     return (
       <div className="index_page">
+        {/* <img className="login_banner" src={banner} /> */}
         <div className="index_heading">
           A Better Banking System Using Blockchain
         </div>
-        <input
-          className="index_input_username"
-          value={this.state.userName}
-          placeholder="Enter username"
-          onChange={(e) => this.setState({ userName: e.target.value })}
-        />
-        <input
-          value={this.state.password}
-          className="index_input_password"
-          placeholder="Enter password"
-          onChange={(e) => this.setState({ password: e.target.value })}
-        />
+        <div className="index_inputs">
+          <input
+            className="index_input_email"
+            // value={this.state.userName}
+            placeholder="Enter email address"
+            onChange={(e) => this.setState({ userEmail: e.target.value })}
+          />
+          <input
+            value={this.state.password}
+            className="index_input_password"
+            placeholder="Enter password"
+            onChange={(e) => this.setState({ password: e.target.value })}
+          />
+        </div>
 
         <button className="index_button_login" onClick={() => this.loginFunc()}>
           Login
         </button>
 
-        <div className="index_text_or">Or...</div>
+        <div className="index_text_or">Or, if you are new: </div>
 
         <button
           className="index_button_signup"
-          onClick={() => this.callCreate()}
+          onClick={() => this.callSignup()}
         >
           Sign up
         </button>

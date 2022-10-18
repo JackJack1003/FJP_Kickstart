@@ -55,11 +55,11 @@ export default function App() {
       // setProvider(provider);
       const provider = await new ethers.providers.InfuraProvider(
         'goerli',
-        'cf39d39ac33347f7959e2575d8e5b5c9'
+        process.env.NEXT_PUBLIC_GOERLI_provider
       );
       setProvider(provider);
       const wallet = new ethers.Wallet(
-        '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
+        process.env.NEXT_PUBLIC_WALLET_PRIVATE,
         provider
       );
       setWallet(wallet);
@@ -119,12 +119,12 @@ export default function App() {
   const getSigner = async (provider) => {
     const _provider = await new ethers.providers.InfuraProvider(
       'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
+      process.env.NEXT_PUBLIC_GOERLI_provider
     );
 
     // provider.send('eth_requestAccounts', []);
     const _wallet = new ethers.Wallet(
-      '9dace5f6c71710f796698a88c8821e69027412a35a624f9ab00ea26dbdb2d921',
+      process.env.NEXT_PUBLIC_WALLET_PRIVATE,
       _provider
     );
 
@@ -187,7 +187,7 @@ export default function App() {
     );
     const _provider = await new ethers.providers.InfuraProvider(
       'goerli',
-      'cf39d39ac33347f7959e2575d8e5b5c9'
+      process.env.NEXT_PUBLIC_GOERLI_provider
     );
     bankContract
       .connect(_provider)
@@ -368,37 +368,43 @@ export default function App() {
                               </button>
                             </div>
                           ) : (
-                            <span>closed</span>
+                            <div> </div>
                           )}
                         </div>
                       </div>
                     ))}
 
-                  <div>
-                    Loan
+                  <div className="loan_loan">
+                    Deposit
                     {/* <input
                       onChange={(e) => {
                         setExchangeRate(e.target.value);
                       }}
                     /> */}
-                    <input
-                      onChange={(e) => changeExchangeRate(e.target.value)}
-                    />
-                    <select
-                      name="selectList"
-                      id="selectList"
-                      onChange={(e) => setDepositSym(e.target.value)}
-                    >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">T3</option>
-                    </select>
-                    For
-                    {exchangeRate}
+                    <div className="loan_deposit_input">
+                      <input
+                        onChange={(e) => changeExchangeRate(e.target.value)}
+                      />
+                      <div className="loan_deposit_input_eth">Eth</div>
+                    </div>
+                    <div className="loan_exchangerate">
+                      For: {exchangeRate}
+                      <div className="loan_exchangerate_select">
+                        <select
+                          name="selectList"
+                          id="selectList"
+                          onChange={(e) => setDepositSym(e.target.value)}
+                        >
+                            <option value="T1">T1</option> {' '}
+                          <option value="T2">T2</option>
+                          <option value="T3">T3</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <button
-                  className="loans_Withdraw_Button"
+                  className="loans_loan_button"
                   onClick={() =>
                     stakeEther(depositValue, depositSym, exchangeRate)
                   }

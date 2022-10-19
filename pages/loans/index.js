@@ -363,7 +363,6 @@ export default function App() {
                               <div>{a.sentValue}</div>
                               <div>{a.sentSymbol}</div>
                               <button className="loans_Withdraw_Button">
-                                {' '}
                                 Withdraw
                               </button>
                             </div>

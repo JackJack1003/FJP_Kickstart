@@ -12,6 +12,7 @@ class history extends Component {
 
   async componentDidMount() {
     const accounts = await web3.eth.getAccounts();
+    console.log(accounts);
     const query = `
         *[_type=="transactions" && fromAddress == "${accounts[0]}"] { toAddress, 
             amount, timeStamp

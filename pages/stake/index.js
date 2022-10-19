@@ -150,7 +150,7 @@ function App() {
       <div className="appBody">
         <div className="stake_marketcontainer">
           <div className="subContainer">
-            <span className="marketHeader">Ethereum Market</span>
+            <span className="marketHeader">Staking Platform</span>
           </div>
 
           <div className="row">
@@ -211,26 +211,22 @@ function App() {
           <div className="subContainer">
             <span className="marketHeader">Staked Assets</span>
           </div>
-          <div>
-            <div className="row stake_columnHeaders">
-              <div className="col-md-2">Assets</div>
-              <div className="col-md-2">Percent Interest</div>
-              <div className="col-md-2">Staked</div>
-              <div className="col-md-2">Interest</div>
-              <div className="col-md-2">Days Remaining</div>
-              <div className="col-md-2"></div>
-            </div>
-          </div>
+
           <br />
           {assets.length > 0 &&
             assets.map((a, idx) => (
               <div className="row">
                 <div className="col-md-2"></div>
-                <div className="col-md-2">{a.percentInterest} %</div>
-                <div className="col-md-2">{a.etherStaked}</div>
-                <div className="col-md-2">{a.etherInterest}</div>
-                <div className="col-md-2">{a.daysRemaining}</div>
-                <div className="col-md-2">
+                <div className="col-md-2">Percent Interest</div>
+                <div className="col-md-3">{a.percentInterest} %</div>
+                <div className="col-md-2">Staked</div>
+                <div className="col-md-3">{a.etherStaked}</div>
+                <div className="col-md-2">Interest</div>
+                <div className="col-md-3">{a.etherInterest}</div>
+                <div className="col-md-2">Days Remaining</div>
+                <div className="col-md-3">{a.daysRemaining}</div>
+
+                <div className="col-md-3">
                   {a.opened ? (
                     <div
                       onClick={() => withdraw(a.positionID)}

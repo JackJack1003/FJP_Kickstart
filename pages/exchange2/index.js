@@ -28,6 +28,7 @@ export default function App() {
   const [withdrawSym, setWithdrawSym] = useState('');
   const [markets, setMarkets] = useState([]);
   const [keys, setKeys] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [amount, setAmount] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -175,6 +176,7 @@ export default function App() {
   };
 
   const exchange = async (_depSym, _withSym, _depValue, _withValue) => {
+    setLoading(true);
     console.log('exchange word gecall');
     console.log(_depSym, _depValue, _withSym, _withValue);
     const withWei = toWei(_withValue);
@@ -183,6 +185,7 @@ export default function App() {
     depositTokens(depWei, _depSym);
     await sleep(5000);
     withdrawTokens(withWei, _withSym);
+    setLoading(false);
   };
 
   const depositOrWithdraw = (e, symbol) => {
@@ -237,94 +240,103 @@ export default function App() {
       <header className="App-header">
         {isConnected() ? (
           <div>
-            <p>Welcome {signerAddress?.substring(0, 10)}...</p>
-            <div>
-              <div className="list-group">
-                <div className="list-group-item">
-                  {Object.keys(tokenBalances).map((symbol, idx) => (
-                    <div className=" row d-flex py-3" key={idx}>
-                      <div className="col-md-3">
-                        <div>{symbol.toUpperCase()}</div>
-                      </div>
+            {this.state.loading ? (
+              <div>
+                <div className="loading_spinner"> </div>
+              </div>
+            ) : (
+              <div>
+                {' '}
+                <p>Welcome {signerAddress?.substring(0, 10)}...</p>
+                <div>
+                  <div className="list-group">
+                    <div className="list-group-item">
+                      {Object.keys(tokenBalances).map((symbol, idx) => (
+                        <div className=" row d-flex py-3" key={idx}>
+                          <div className="col-md-3">
+                            <div>{symbol.toUpperCase()}</div>
+                          </div>
 
-                      <div className="d-flex gap-4 col-md-3">
-                        <small className="opacity-50 text-nowrap">
-                          {toRound(tokenBalances[symbol])}
-                        </small>
-                      </div>
+                          <div className="d-flex gap-4 col-md-3">
+                            <small className="opacity-50 text-nowrap">
+                              {toRound(tokenBalances[symbol])}
+                            </small>
+                          </div>
 
-                      {/* <div className="d-flex gap-4 col-md-6">
+                          {/* <div className="d-flex gap-4 col-md-6">
                         <button
                           onClick={() => displayModal(symbol)}
                           className="btn btn-primary"
                         >
                           Deposit/Withdraw
                         </button> */}
-                      <Modal
-                        show={showModal}
-                        onClose={() => setShowModal(false)}
-                        symbol={selectedSymbol}
-                        depositOrWithdraw={depositOrWithdraw}
-                        isDeposit={isDeposit}
-                        setIsDeposit={setIsDeposit}
-                        setAmount={setAmount}
-                      />
-                    </div>
-                    // </div>
-                  ))}
-                  <div className="loadBank">
-                    <button onClick={() => loadBank()}> Load bank!</button>
-                  </div>
-                  {/* <div className="Exchange">
+                          <Modal
+                            show={showModal}
+                            onClose={() => setShowModal(false)}
+                            symbol={selectedSymbol}
+                            depositOrWithdraw={depositOrWithdraw}
+                            isDeposit={isDeposit}
+                            setIsDeposit={setIsDeposit}
+                            setAmount={setAmount}
+                          />
+                        </div>
+                        // </div>
+                      ))}
+                      <div className="loadBank">
+                        <button onClick={() => loadBank()}> Load bank!</button>
+                      </div>
+                      {/* <div className="Exchange">
                     <button onClick={() => exchangeToken()}> Exchange!</button>
                   </div> */}
 
-                  <div>
-                    Deposit
-                    {/* <input
+                      <div>
+                        Deposit
+                        {/* <input
                       onChange={(e) => {
                         setExchangeRate(e.target.value);
                       }}
                     /> */}
-                    <input
-                      onChange={(e) => changeExchangeRate(e.target.value)}
-                    />
-                    <select
-                      name="selectList"
-                      id="selectList"
-                      onChange={(e) => setDepositSym(e.target.value)}
+                        <input
+                          onChange={(e) => changeExchangeRate(e.target.value)}
+                        />
+                        <select
+                          name="selectList"
+                          id="selectList"
+                          onChange={(e) => setDepositSym(e.target.value)}
+                        >
+                            <option value="T1">T1</option> {' '}
+                          <option value="T2">T2</option>
+                          <option value="T3">Tether</option>
+                        </select>
+                        For
+                        {exchangeRate}
+                        <select
+                          name="selectList"
+                          id="selectList"
+                          onChange={(e) => setWithdrawSym(e.target.value)}
+                        >
+                            <option value="T1">T1</option> {' '}
+                          <option value="T2">T2</option>
+                          <option value="T3">Tether</option>
+                        </select>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() =>
+                        exchange(
+                          depositSym,
+                          withdrawSym,
+                          depositValue,
+                          exchangeRate
+                        )
+                      }
                     >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">Tether</option>
-                    </select>
-                    For
-                    {exchangeRate}
-                    <select
-                      name="selectList"
-                      id="selectList"
-                      onChange={(e) => setWithdrawSym(e.target.value)}
-                    >
-                        <option value="T1">T1</option> {' '}
-                      <option value="T2">T2</option>
-                      <option value="T3">Tether</option>
-                    </select>
+                      Exchange!
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() =>
-                    exchange(
-                      depositSym,
-                      withdrawSym,
-                      depositValue,
-                      exchangeRate
-                    )
-                  }
-                >
-                  Exchange!
-                </button>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div>

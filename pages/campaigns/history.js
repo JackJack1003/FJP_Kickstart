@@ -14,7 +14,9 @@ class history extends Component {
     const accounts = await web3.eth.getAccounts();
     console.log(accounts);
     const query = `
-        *[_type=="transactions" && fromAddress == "${accounts[0]}"] { toAddress, 
+        *[_type=="transactions" && fromAddress == "${window.localStorage.getItem(
+          'address'
+        )}"] { toAddress, 
             amount, timeStamp
         }
       `;

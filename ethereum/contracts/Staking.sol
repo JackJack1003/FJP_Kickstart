@@ -107,4 +107,3 @@ contract Staking {
         }
 
     }
-}

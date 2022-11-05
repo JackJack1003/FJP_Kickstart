@@ -17,10 +17,12 @@ class Home extends Component {
     userName: '',
     userAddress: '',
     manager: '',
+    historyAddress: '',
   };
   static async getInitialProps(props) {
     const campaigns = await factory.methods.getDeployedContracts().call();
-
+    const banks = await factory.methods.getDeployedContracts().call();
+    //await this.setState({ historyAddress: banks[banks.length - 1] });
     return { campaigns };
   } //static beteken ander instances van die class inherent nie die nie
 
@@ -30,15 +32,28 @@ class Home extends Component {
     }
   `;
     const clientRes = await client.fetch(query);
-    this.setState({ userName: clientRes[0].userName });
-    await this.setState({ userAddress: clientRes[0].address });
-    console.log('Die address wat gestoor is, is ', this.state.userAddress);
+    if (clientRes.length > 0) {
+      this.setState({ userName: clientRes[0].userName });
+      await this.setState({ userAddress: clientRes[0].address });
+      console.log('Address is: ', clientRes[0].address);
+      //window.localStorage.setItem('address', clientRes[0].address);
+      // Router.push(`/campaigns/${clientRes[0].address}`);
+    } else {
+      window.alert('This user does not exist');
+    }
   };
   viewTrans = async () => {
-    const accounts = await web3.eth.getAccounts();
-    console.log('accounts is: ', accounts[0]);
-
-    Router.push(`/campaigns/history/${accounts[0]}`);
+    const query = `
+    *[_type=="users" && userName == "${window.localStorage.getItem(
+      'username'
+    )}"] { userName, password, salt, address
+    }
+  `;
+    const clientRes = await client.fetch(query);
+    this.setState({ historyAddress: clientRes[0].address });
+    console.log('Address is: ', clientRes[0].address);
+    window.localStorage.setItem('address', clientRes[0].address);
+    Router.push(`/campaigns/history`);
   };
 
   renderCampaigns() {
@@ -80,11 +95,10 @@ class Home extends Component {
             </div>
           </div>
           <div className="home_trans_his">
-            <a>
-              <button onClick={() => this.viewTrans()}>
-                View Transaction History
-              </button>
-            </a>
+            <button onClick={() => this.viewTrans()}>
+              {/* <button onClick={() => this.viewTrans()}> */}
+              View Transaction History
+            </button>
           </div>
           <div className="home_beneficary">
             <Beneficary

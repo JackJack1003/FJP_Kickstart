@@ -132,6 +132,7 @@ function App() {
     console.log('contract is: ', contract);
     console.log('signer is: ', signer);
     contract.connect(signer).stakeEther(stakingLength, data);
+    setShowStakeModal(false);
   };
 
   const withdraw = (positionID) => {
@@ -216,26 +217,26 @@ function App() {
           {assets.length > 0 &&
             assets.map((a, idx) => (
               <div className="row">
-                <div className="col-md-2"></div>
-                <div className="col-md-2">Percent Interest</div>
-                <div className="col-md-3">{a.percentInterest} %</div>
-                <div className="col-md-2">Staked</div>
-                <div className="col-md-3">{a.etherStaked}</div>
-                <div className="col-md-2">Interest</div>
-                <div className="col-md-3">{a.etherInterest}</div>
-                <div className="col-md-2">Days Remaining</div>
-                <div className="col-md-3">{a.daysRemaining}</div>
-
                 <div className="col-md-3">
                   {a.opened ? (
-                    <div
-                      onClick={() => withdraw(a.positionID)}
-                      className="orangeMiniButton"
-                    >
-                      Withdraw
+                    <div className="stake_position">
+                      <div className="col-md-2">Percent Interest</div>
+                      <div className="col-md-3">{a.percentInterest} %</div>
+                      <div className="col-md-2">Staked</div>
+                      <div className="col-md-3">{a.etherStaked}</div>
+                      <div className="col-md-2">Interest</div>
+                      <div className="col-md-3">{a.etherInterest}</div>
+                      <div className="col-md-2">Days Remaining</div>
+                      <div className="col-md-3">{a.daysRemaining}</div>
+                      <div
+                        onClick={() => withdraw(a.positionID)}
+                        className="orangeMiniButton"
+                      >
+                        Withdraw
+                      </div>
                     </div>
                   ) : (
-                    <span>closed</span>
+                    <span></span>
                   )}
                 </div>
               </div>

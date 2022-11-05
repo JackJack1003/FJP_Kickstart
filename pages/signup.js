@@ -58,11 +58,11 @@ class Signup extends Component {
     }
 
     const query = `
-    *[_type=="users" && email == "${this.state.userEmail}"] { email,userName, password, salt
+    *[_type=="users" && email match "${this.state.userEmail}"] { email,userName, password, salt
     }
   `;
     const query2 = `
-  *[_type=="users" && userName == "${this.state.userName}"] { email,userName, password, salt
+  *[_type=="users" && userName match "${this.state.userName}"] { email,userName, password, salt
   }
 `;
     const clientRes = await client.fetch(query);
@@ -73,6 +73,7 @@ class Signup extends Component {
         //save user
         this.saveUser().then((response) => {
           Cookies.set('loggedin', true);
+          window.localStorage.setItem('username', this.state.userName);
           Router.push(`/home`);
         });
       } catch (err) {
@@ -117,6 +118,9 @@ class Signup extends Component {
         >
           Sign up
         </button>
+        <Link route={`/`}>
+          <button className="signup_button_login">Login Instead</button>
+        </Link>
       </div>
     );
   }

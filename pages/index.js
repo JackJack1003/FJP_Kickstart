@@ -38,6 +38,7 @@ class Login extends Component {
       console.log(myUserInfo);
       const dbSalt = myUserInfo.salt;
       const dbPass = myUserInfo.password;
+
       await this.setState({
         newPassword: crypto
           .pbkdf2Sync(this.state.password, dbSalt, 1000, 64, `sha512`)
@@ -50,7 +51,9 @@ class Login extends Component {
       console.log(myNewPassword);
       if (myNewPassword == dbPass) {
         console.log('Password match');
+        console.log('userName is', myUserInfo.userName);
         Cookies.set('loggedin', true);
+        window.localStorage.setItem('username', myUserInfo.userName);
         Router.push(`/home`);
       } else {
         window.alert('Username and password do not match');

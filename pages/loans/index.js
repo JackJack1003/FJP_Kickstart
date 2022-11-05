@@ -358,9 +358,9 @@ export default function App() {
                               }
                             >
                               <div></div>
-                              <div>{a.percentInterest} %</div>
-                              <div>{a.etherStaked}</div>
-                              <div>{a.sentValue}</div>
+
+                              <div>{a.etherStaked} Ether</div>
+                              <div> For {a.sentValue}</div>
                               <div>{a.sentSymbol}</div>
                               <button className="loans_Withdraw_Button">
                                 Withdraw

@@ -10,7 +10,10 @@ function BigNavBar() {
   return (
     <div>
       <div className="navBar">
-        <div className="navBar_Welcome">Welcome Joey</div>
+        <div className="navBar_Welcome">
+          {' '}
+          {/* Welcome: {window.localStorage.getItem('username')} */}
+        </div>
         <div className="navBar_buttonGroup">
           <Link route="/home">
             <button className="navBar_button"> Transactions </button>

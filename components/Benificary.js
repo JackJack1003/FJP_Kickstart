@@ -3,6 +3,7 @@ import { Link } from '../routes';
 
 function Beneficary({ _user, _address }) {
   const message = 'View Bank account';
+  if (_address !== '') console.log(_address);
   return (
     <div>
       <div className="benificary">

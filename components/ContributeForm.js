@@ -8,6 +8,7 @@ import { client } from '../lib/sanityClient';
 class ContributeForm extends Component {
   state = {
     value: '',
+    loading: false,
   };
   saveTransaction = async () => {
     console.log('save het begin');
@@ -24,6 +25,7 @@ class ContributeForm extends Component {
   };
   onSubmit = async (event) => {
     event.preventDefault();
+    this.setState({ loading: true });
     const campaign = Campaign(this.props.address);
     console.log('net voor try');
     try {
@@ -37,31 +39,41 @@ class ContributeForm extends Component {
       //const accounts = await web3.eth.getAccounts();
       const txDoc = {
         _type: 'transactions',
-        fromAddress: accounts[0],
+        fromAddress: window.localStorage.getItem('address'),
         toAddress: this.props.address,
         amount: parseFloat(this.state.value),
         timeStamp: new Date(Date.now()).toISOString(),
       };
       await client.create(txDoc);
       console.log('klaar ge create');
-
+      this.setState({ loading: false });
       Router.replaceRoute(`/campaigns/${this.props.address}`);
     } catch (err) {}
   };
   render() {
+    let loading = this.state.loading;
     return (
-      <Form onSubmit={this.onSubmit}>
-        <Form.Field>
-          <label>Amount to pay</label>
-          <Input
-            value={this.state.value}
-            onChange={(event) => {
-              this.setState({ value: event.target.value });
-            }}
-          ></Input>
-        </Form.Field>
-        <Button primary>Pay!</Button>
-      </Form>
+      <div>
+        {loading ? (
+          <div>
+            <h1> Loading</h1>
+            <div className="loading-spinner"></div>
+          </div>
+        ) : (
+          <Form onSubmit={this.onSubmit}>
+            <Form.Field>
+              <label>Amount to pay</label>
+              <Input
+                value={this.state.value}
+                onChange={(event) => {
+                  this.setState({ value: event.target.value });
+                }}
+              ></Input>
+            </Form.Field>
+            <Button primary>Pay!</Button>
+          </Form>
+        )}
+      </div>
     );
   }
 }
